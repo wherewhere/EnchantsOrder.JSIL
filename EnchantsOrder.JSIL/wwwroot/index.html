@@ -1,0 +1,65 @@
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enchants Order</title>
+    <meta name="description" content="Get the best order for enchanting." />
+    <meta name="theme-color" content="#f2f2f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#171717" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="256x256"
+          href="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png" />
+
+    <meta name="google-site-verification" content="TPDbPzhpaqYCFwTabtkmyHbwnULZEHrAihJNMsmpsks">
+    <meta name="msvalidate.01" content="C979E9108FB600BD7D5A68A70678F7AD">
+    <meta name="yandex-verification" content="e15f6a5a8ad325cd">
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag("js", new Date());
+        gtag("config", "G-6FDQ56LCDG");
+    </script>
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-6FDQ56LCDG" async></script>
+    <script>
+        window._hmt = window._hmt || [];
+    </script>
+    <script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" async></script>
+    <script>
+        window.clarity = window.clarity || function() {
+            (window.clarity.q = window.clarity.q || []).push(arguments);
+        };
+    </script>
+    <script src="https://www.clarity.ms/tag/m7ua7korsz" async></script>
+
+    <link href="./lib/winjs/css/ui-dark.min.css" rel="stylesheet" />
+    <link href="./css/index.css" rel="stylesheet" />
+    <script src="./lib/winjs/js/base.min.js" type="text/javascript"></script>
+    <script src="./lib/winjs/js/ui.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var jsilConfig = {
+            manifests: [
+                "EnchantsOrder.JSIL.exe"
+            ],
+            libraryRoot: "./JsLibraries/",
+            showProgressBar: true
+        };
+    </script>
+    <script src="./JsLibraries/JSIL.js" type="text/javascript"></script>
+    <script src="./lib/jquery/dist/jquery.slim.min.js" type="text/javascript"></script>
+    <script src="./js/index.js" type="text/javascript" async></script>
+</head>
+
+<body onload="onLoad()">
+    <div><input id="object-penalty" class="win-textbox" type="number" value="0" /></div>
+    <div id="enchantment-name" data-win-control="WinJS.UI.AutoSuggestBox"
+         data-win-options="{ chooseSuggestionOnEnter: true, searchHistoryDisabled: true }"></div>
+    <div><input id="enchantment-level" class="win-textbox" type="number" value="1" /></div>
+    <div><input id="enchantment-weight" class="win-textbox" type="number" value="1" /></div>
+    <div><button id="enchantment-add" class="win-button">Add</button></div>
+    <div><button id="enchantment-start" class="win-button">Start</button></div>
+    <pre id="results"></pre>
+</body>
+
+</html>

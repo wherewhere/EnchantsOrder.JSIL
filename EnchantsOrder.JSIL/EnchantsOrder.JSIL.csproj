@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net4.8.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EnchantsOrder" Version="0.2.7" />
+    <PackageReference Include="JSIL.Compiler" Version="0.9.1-myget1575" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(PkgJSIL_Compiler)\tools\JSIL.Meta.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReferenceCopyLocalPaths Include="wwwroot\**\*.*">
+      <DestinationSubDirectory>%(RecursiveDir)</DestinationSubDirectory>
+    </ReferenceCopyLocalPaths>
+    <ReferenceCopyLocalPaths Include="$(PkgJSIL_Compiler)\tools\JS Libraries\**\*.*">
+      <DestinationSubDirectory>%(RecursiveDir)</DestinationSubDirectory>
+    </ReferenceCopyLocalPaths>
+  </ItemGroup>
+
+  <Target Name="JsilTranslation" AfterTargets="AfterBuild">
+    <Exec Command="$(PkgJSIL_Compiler)\tools\jsilc $(TargetPath)" WorkingDirectory="$(TargetDir)" />
+  </Target>
+
+</Project>

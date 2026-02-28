@@ -1,0 +1,26 @@
+{
+  "version": "3.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "jquery@latest",
+      "files": [
+        "dist/jquery.slim.min.js",
+        "dist/jquery.slim.min.map"
+      ],
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "winjs@latest",
+      "files": [
+        "css/ui-dark.min.css",
+        "fonts/Symbols.ttf",
+        "js/base.min.js",
+        "js/base.min.js.map",
+        "js/ui.min.js",
+        "js/ui.min.js.map"
+      ],
+      "destination": "wwwroot/lib/winjs/"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+﻿body {
+    font-family: "Segoe UI", sans-serif, "Segoe MDL2 Assets", "Symbols", "Segoe UI Emoji";
+    font-size: 15px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.win-button {
+    min-width: auto;
+}
