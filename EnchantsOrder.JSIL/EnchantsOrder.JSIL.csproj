@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
+    <JSILOutputPath>wwwroot</JSILOutputPath>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
@@ -21,15 +22,22 @@
 
   <ItemGroup>
     <ReferenceCopyLocalPaths Include="wwwroot\**\*.*">
-      <DestinationSubDirectory>%(RecursiveDir)</DestinationSubDirectory>
+      <DestinationSubDirectory>wwwroot\%(RecursiveDir)</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
     <ReferenceCopyLocalPaths Include="$(PkgJSIL_Compiler)\tools\JS Libraries\**\*.*">
-      <DestinationSubDirectory>%(RecursiveDir)</DestinationSubDirectory>
+      <DestinationSubDirectory>wwwroot\%(RecursiveDir)</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
   </ItemGroup>
 
   <Target Name="JsilTranslation" AfterTargets="AfterBuild">
-    <Exec Command="$(PkgJSIL_Compiler)\tools\jsilc $(TargetPath)" WorkingDirectory="$(TargetDir)" />
+    <PropertyGroup>
+      <RunJSILCompilation Condition="$(RunJSILCompilation) == ''">true</RunJSILCompilation>
+      <_JsilcDir>$(PkgJSIL_Compiler)\tools\jsilc</_JsilcDir>
+      <_JSILOutputPath Condition="$(JSILOutputPath) != ''">-out=$(JSILOutputPath) </_JSILOutputPath>
+      <_PlatformArgument Condition="$(Platform) != ''">-platform=$(Platform) </_PlatformArgument>
+      <_ConfigurationArgument Condition="$(Configuration) != ''">-configuration=$(Configuration) </_ConfigurationArgument>
+    </PropertyGroup>
+    <Exec Command="$(_JsilcDir) $(TargetPath) $(_JSILOutputPath)$(_PlatformArgument)$(_ConfigurationArgument)" WorkingDirectory="$(TargetDir)" Condition="$(RunJSILCompilation)" />
   </Target>
 
 </Project>
