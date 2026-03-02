@@ -9,11 +9,29 @@
     <TargetFramework>net4.8.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+      System.Diagnostics.StackTraceHiddenAttribute;
+      System.Index;
+      System.Range;
+      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
+      System.Runtime.CompilerServices.IsExternalInit;
+      System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="EnchantsOrder" Version="0.2.7" />
     <PackageReference Include="JSIL.Compiler" Version="0.9.1-myget1575" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Version="1.15.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
