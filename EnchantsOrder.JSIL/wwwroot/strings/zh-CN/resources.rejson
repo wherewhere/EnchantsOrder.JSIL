@@ -1,0 +1,22 @@
+{
+  "title": "附魔排序",
+  "enchants": "附魔书",
+  "penalty": "初始惩罚",
+  "penalty-title": "设置您想要附魔的物品的初始惩罚。",
+  "enchantment-add": "添加附魔",
+  "enchantment": "附魔",
+  "enchantment-title": "通过名称选择目标附魔。",
+  "enchantment-placeholder": "选择附魔",
+  "level": "等级",
+  "level-title": "设置目标附魔的等级。",
+  "weight": "权重",
+  "weight-title": "设置目标附魔的权重。如果您不确定它是什么，请不要更改。",
+  "add": "添加",
+  "start": "排序",
+  "wanted": "附魔列表",
+  "results": "结果",
+  "items": "物品",
+  "item": "选择物品",
+  "item-title": "通过名称选择目标物品。",
+  "loading": "加载中..."
+}

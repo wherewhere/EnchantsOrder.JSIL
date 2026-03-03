@@ -25,6 +25,15 @@
     overflow-y: auto;
 }
 
+#progress-bar.win-progress-bar {
+    width: 100%;
+    z-index: 4;
+    position: absolute;
+    top: 0;
+    -webkit-appearance: auto;
+    appearance: auto;
+}
+
 h3.win-type-title {
     margin-top: 24px;
     margin-bottom: 6px;
@@ -68,15 +77,15 @@ h5.win-type-base {
 
 .win-pivot,
 .win-listview,
-.win-listview>.win-viewport,
+.win-listview > .win-viewport,
 .win-listview .win-viewport .win-container,
 .win-listview .win-viewport .win-container .win-itembox {
     height: auto;
 }
 
-.win-listview>.win-vertical .win-container {
-    margin: 10px 7px;
-}
+    .win-listview > .win-vertical .win-container {
+        margin: 10px 7px;
+    }
 
 .win-pivot {
     flex: 1;
@@ -101,12 +110,17 @@ h5.win-type-base {
     padding: 8px;
 }
 
-.wanted-list-root .win-button {
-    height: 32px;
-    width: 32px;
-    padding: 2px 0 0 1px;
-}
+    .wanted-list-root .win-button {
+        height: 32px;
+        width: 32px;
+        padding: 2px 0 0 1px;
+    }
+
+        .wanted-list-root .win-button:not(:hover):not(:active) {
+            background-color: transparent;
+        }
 
 .results-output {
     margin: 0 1px;
+    overflow-x: auto;
 }

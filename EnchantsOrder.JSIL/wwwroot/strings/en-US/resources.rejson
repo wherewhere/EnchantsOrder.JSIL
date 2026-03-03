@@ -1,0 +1,22 @@
+{
+  "title": "Enchants Order",
+  "enchants": "Enchants",
+  "penalty": "Initial Penalty",
+  "penalty-title": "Set the initial penalty of the item witch you want to enchant.",
+  "enchantment-add": "Add Enchantment",
+  "enchantment": "Enchantment",
+  "enchantment-title": "Select the target enchantment by name.",
+  "enchantment-placeholder": "Choose Enchantment",
+  "level": "Level",
+  "level-title": "Set the level of the target enchantment.",
+  "weight": "Weight",
+  "weight-title": "Set the weight of the target enchantment. Do not change if you are not sure what it is.",
+  "add": "Add",
+  "start": "Start",
+  "wanted": "Enchantment List",
+  "results": "Results",
+  "items": "Items",
+  "item": "Select Item",
+  "item-title": "Select the target item by name.",
+  "loading": "Loading..."
+}

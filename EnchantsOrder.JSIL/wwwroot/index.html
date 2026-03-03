@@ -37,29 +37,30 @@
     <meta name="google-site-verification" content="TPDbPzhpaqYCFwTabtkmyHbwnULZEHrAihJNMsmpsks">
     <meta name="msvalidate.01" content="C979E9108FB600BD7D5A68A70678F7AD">
     <meta name="yandex-verification" content="e15f6a5a8ad325cd">
-    <script>
+    <script type="text/javascript">
         window.dataLayer = window.dataLayer || [];
         function gtag() { window.dataLayer.push(arguments); }
         window.gtag = gtag;
         gtag("js", new Date());
         gtag("config", "G-6FDQ56LCDG");
     </script>
-    <script src="https://www.googletagmanager.com/gtag/js?id=G-6FDQ56LCDG" async></script>
-    <script>
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-6FDQ56LCDG" type="text/javascript" async></script>
+    <script type="text/javascript">
         window._hmt = window._hmt || [];
     </script>
-    <script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" async></script>
-    <script>
+    <script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" type="text/javascript" async></script>
+    <script type="text/javascript">
         window.clarity = window.clarity || function () {
             (window.clarity.q = window.clarity.q || []).push(arguments);
         };
     </script>
-    <script src="https://www.clarity.ms/tag/m7ua7korsz" async></script>
+    <script src="https://www.clarity.ms/tag/m7ua7korsz" type="text/javascript" async></script>
 
     <link href="./lib/winjs/css/ui-dark.min.css" rel="stylesheet" />
     <link href="./css/index.css" rel="stylesheet" />
     <script src="./lib/winjs/js/base.min.js" type="text/javascript"></script>
     <script src="./lib/winjs/js/ui.min.js" type="text/javascript"></script>
+    <script src="./js/i18n.js" type="text/javascript"></script>
     <script>
         WinJS.UI._Accents.createAccentRule(
             "#loadingProgress #progressBar",
@@ -82,49 +83,73 @@
 </head>
 
 <body class="win-ui-dark win-type-body" onload="onLoad()">
+    <progress id="progress-bar" class="win-progress-bar" style="display: none;"></progress>
     <div class="root">
-        <h1 id="title" class="win-type-header">Enchants Order</h1>
+        <h1 id="title" class="win-type-header" data-win-res="{ textContent: 'title' }">Enchants Order</h1>
         <div class="pivot-container">
             <div data-win-control="WinJS.UI.Pivot">
-                <div id="enchants" data-win-control="WinJS.UI.PivotItem" data-win-options="{ header: 'Enchants' }">
+                <div id="enchants" data-win-control="WinJS.UI.PivotItem" data-win-options="{ header: 'Enchants' }"
+                     data-win-res="{ winControl: { header: 'enchants' } }">
                     <span id="enchants-object-group">
                         <label>
-                            <h5 id="enchants-object-penalty" class="win-type-base">Use Presets</h5>
+                            <h5 id="enchants-object-penalty" class="win-type-base"
+                                data-win-res="{ textContent: 'penalty' }">
+                                Initial Penalty
+                            </h5>
                             <input id="enchants-object-penalty-input" class="win-textbox" type="number" value="0"
-                                   title="Set the initial penalty of the item witch you want to enchant." />
+                                   title="Set the initial penalty of the item witch you want to enchant."
+                                   data-win-res="{ title: 'penalty-title' }" />
                         </label>
                     </span>
                     <span id="enchants-enchantment-group">
-                        <h3 id="enchants-enchantment" class="win-type-title">Add Enchantment</h3>
+                        <h3 id="enchants-enchantment" class="win-type-title"
+                            data-win-res="{ textContent: 'enchantment-add' }">
+                            Add Enchantment
+                        </h3>
                         <label>
-                            <h5 id="enchants-enchantment-name" class="win-type-base">Enchantment</h5>
+                            <h5 id="enchants-enchantment-name" class="win-type-base"
+                                data-win-res="{ textContent: 'enchantment' }">
+                                Enchantment
+                            </h5>
                             <div id="enchants-enchantment-name-selector" data-win-control="WinJS.UI.AutoSuggestBox"
                                  data-win-options="{ placeholderText: 'Choose Enchantment', chooseSuggestionOnEnter: true, searchHistoryDisabled: true }"
-                                 title="Select the target enchantment by name."></div>
+                                 title="Select the target enchantment by name."
+                                 data-win-res="{ title: 'enchantment-title', winControl: { placeholderText: 'enchantment-placeholder' } }">
+                            </div>
                         </label>
                         <label>
-                            <h5 id="enchants-enchantment-level" class="win-type-base">Level</h5>
+                            <h5 id="enchants-enchantment-level" class="win-type-base"
+                                data-win-res="{ textContent: 'level' }">
+                                Level
+                            </h5>
                             <input id="enchants-enchantment-level-input" class="win-textbox" type="number" value="1"
-                                   title="Set the level of the target enchantment." />
+                                   title="Set the level of the target enchantment."
+                                   data-win-res="{ title: 'level-title' }" />
                         </label>
                         <label>
-                            <h5 id="enchants-enchantment-weight" class="win-type-base">Weight</h5>
+                            <h5 id="enchants-enchantment-weight" class="win-type-base"
+                                data-win-res="{ textContent: 'weight' }">
+                                Weight
+                            </h5>
                             <input id="enchants-enchantment-weight-input" class="win-textbox" type="number" value="1"
-                                   title="Set the weight of the target enchantment. Do not change if you are not sure what it is." />
+                                   title="Set the weight of the target enchantment. Do not change if you are not sure what it is."
+                                   data-win-res="{ title: 'weight-title' }" />
                         </label>
                         <div class="item-group">
-                            <button id="enchants-enchantment-add" class="win-button" title="Add"
-                                    type="button">
+                            <button id="enchants-enchantment-add" class="win-button" title="Add" type="button"
+                                    data-win-res="{ textContent: 'add' }">
                                 Add
                             </button>
-                            <button id="enchants-enchantment-start" class="win-button" title="Start"
-                                    type="button">
+                            <button id="enchants-enchantment-start" class="win-button" title="Start" type="button"
+                                    data-win-res="{ textContent: 'start' }">
                                 Start
                             </button>
                         </div>
                     </span>
                     <span id="enchants-wanted-group" style="display: none;">
-                        <h3 id="enchants-wanted" class="win-type-title">Enchantment List</h3>
+                        <h3 id="enchants-wanted" class="win-type-title" data-win-res="{ textContent: 'wanted' }">
+                            Enchantment List
+                        </h3>
                         <div id="enchants-wanted-list-template" data-win-control="WinJS.Binding.Template">
                             <div class="wanted-list-root">
                                 <div>
@@ -133,7 +158,11 @@
                                     Weight: <span data-win-bind="innerText: Weight"></span>
                                     Experience: <span data-win-bind="innerText: Experience"></span>
                                 </div>
-                                <button title="Delete" class="win-button" type="button">&#xE107;</button>
+                                <button title="Delete" class="win-button" type="button"
+                                        onclick="deleteEnchantment(this)"
+                                        data-win-bind="enchantsName: Name; enchantsLevel: Level; enchantsWeight: Weight">
+                                    &#xE107;
+                                </button>
                             </div>
                         </div>
                         <div id="enchants-wanted-list" data-win-control="WinJS.UI.ListView"
@@ -141,32 +170,49 @@
                         </div>
                     </span>
                     <span id="enchants-results-group" style="display: none;">
-                        <h3 id="enchants-results" class="win-type-title">Results</h3>
+                        <h3 id="enchants-results" class="win-type-title" data-win-res="{ textContent: 'results' }">
+                            Results
+                        </h3>
                         <pre class="results-output"><code class="win-code" id="enchants-results-output"></code></pre>
                     </span>
                 </div>
-                <div data-win-control="WinJS.UI.PivotItem" data-win-options="{ header: 'Items' }">
+                <div data-win-control="WinJS.UI.PivotItem" data-win-options="{ header: 'Items' }"
+                     data-win-res="{ winControl: { header: 'items' } }">
                     <span id="items-object-group">
                         <label>
-                            <h5 id="items-object-penalty" class="win-type-base">Use Presets</h5>
+                            <h5 id="items-object-penalty" class="win-type-base"
+                                data-win-res="{ textContent: 'penalty' }">
+                                Use Presets
+                            </h5>
                             <input id="items-object-penalty-input" class="win-textbox" type="number" value="0"
-                                   title="Set the initial penalty of the item witch you want to enchant." />
+                                   title="Set the initial penalty of the item witch you want to enchant."
+                                   data-win-res="{ title: 'penalty-title' }" />
                         </label>
                         <label>
-                            <h5 id="items-object-select" class="win-type-base">Select Item</h5>
+                            <h5 id="items-object-select" class="win-type-base" data-win-res="{ textContent: 'item' }">
+                                Select Item
+                            </h5>
                             <select id="items-object-select-selector" class="win-dropdown"
-                                    title="Select the target item by name." placeholder="Choose Item"></select>
+                                    title="Select the target item by name." placeholder="Choose Item"
+                                    data-win-res="{ title: 'item-title', placeholder: 'item' }">
+                                <option style="display:none;" disabled selected
+                                        data-win-res="{ textContent: 'loading' }">
+                                    Loading...
+                                </option>
+                            </select>
                         </label>
                     </span>
                     <span id="items-results-group" style="display: none;">
-                        <h3 id="items-results" class="win-type-title">Results</h3>
-                        <pre class="items-results-output"><code class="win-code" id="items-results-output"></code></pre>
+                        <h3 id="items-results" class="win-type-title" data-win-res="{ textContent: 'results' }">
+                            Results
+                        </h3>
+                        <pre class="results-output"><code class="win-code" id="items-results-output"></code></pre>
                     </span>
                 </div>
             </div>
         </div>
     </div>
-    <script>WinJS.UI.processAll();</script>
+    <script type="text/javascript">WinJS.UI.processAll();</script>
 </body>
 
 </html>

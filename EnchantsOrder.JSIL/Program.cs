@@ -24,6 +24,8 @@ namespace EnchantsOrder.JSIL
 
         private static async void OnLoaded()
         {
+            dynamic jquery = Builtins.Global["$"];
+            jquery("#progress-bar").removeAttr("style");
             await InitializeEnchantmentsAsync();
             InitializeEnchants();
             InitializeItems();
@@ -56,12 +58,7 @@ namespace EnchantsOrder.JSIL
                 {
                     level.val(enchantment.Level);
                     weight.val(enchantment.Weight);
-                    dynamic input = name.find("input.win-autosuggestbox-input");
-                    input.on("focusout", new Action(() =>
-                    {
-                        selector.queryText = enchantment.Name;
-                        input.off("focusout");
-                    }));
+                    selector._prevQueryText = enchantment.Name;
                 }
             }));
 
@@ -74,16 +71,61 @@ namespace EnchantsOrder.JSIL
             jquery("#enchants-enchantment-add").click(new Action(() =>
             {
                 string name = selector.queryText;
-                int levelValue = int.Parse(level.val());
-                int weightValue = int.Parse(weight.val());
+                int levelValue = int.Parse((string)level.val());
+                int weightValue = int.Parse((string)weight.val());
                 global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
                 enchantments.push(enchantment);
                 wantedGroup.show();
             }));
 
+            dynamic window = Builtins.Global["window"];
+            window.deleteEnchantment = new Action<dynamic>(e =>
+            {
+                try
+                {
+                    string name = e.enchantsName;
+                    int level = e.enchantsLevel;
+                    int weight = e.enchantsWeight;
+                    string key = jquery(e).parents(".win-template").attr("aria-posinset");
+                    dynamic item = enchantments.getItemFromKey(key);
+                    if (Builtins.IsTruthy((object)item))
+                    {
+                        global::EnchantsOrder.Models.Enchantment data = item.data;
+                        if (data.Name == name
+                            && data.Level == level
+                            && data.Weight == weight)
+                        {
+                            enchantments.dataSource.remove(key);
+                            return;
+                        }
+                    }
+                    for (int i = 0; i < enchantments.length; i++)
+                    {
+                        item = enchantments.getItem(i);
+                        global::EnchantsOrder.Models.Enchantment data = item.data;
+                        if ((string)item.key != key
+                            && data.Name == name
+                            && data.Level == level
+                            && data.Weight == weight)
+                        {
+                            enchantments.dataSource.remove(item.key);
+                            return;
+                        }
+                    }
+                }
+                finally
+                {
+                    if (enchantments.length == 0)
+                    {
+                        wantedGroup.hide();
+                        resultsGroup.hide();
+                    }
+                }
+            });
+
             jquery("#enchants-enchantment-start").click(new Action(() =>
             {
-                int penaltyValue = int.Parse(penalty.val());
+                int penaltyValue = int.Parse((string)penalty.val());
                 jquery("#enchants-results-output").text(new ListReader<global::EnchantsOrder.Models.Enchantment>((object)enchantments).Ordering(penaltyValue));
                 resultsGroup.show();
             }));
@@ -95,14 +137,14 @@ namespace EnchantsOrder.JSIL
             dynamic item = jquery("#items-object-select-selector");
             dynamic penalty = jquery("#items-object-penalty-input");
 
-            item.html("<option style='display: none'>Choose Item</option>" + string.Join("\n", Items.Select(x => $"<option>{x}</option>")));
+            item.html("<option style='display: none' disabled selected>Choose Item</option>" + string.Join("\n", Items.Select(x => $"<option>{x}</option>")));
 
             dynamic resultsGroup = jquery("#items-results-group").removeAttr("style").hide();
 
             item.change(new Action(() =>
             {
                 string itemName = item.val();
-                int penaltyValue = int.Parse(penalty.val());
+                int penaltyValue = int.Parse((string)penalty.val());
                 jquery("#items-results-output").text(GetItemList(itemName, penaltyValue));
                 resultsGroup.show();
             }));
@@ -110,14 +152,28 @@ namespace EnchantsOrder.JSIL
 
         private static async Task InitializeEnchantmentsAsync()
         {
-            dynamic json = await XMLHttpRequest.FetchJsonAsync("https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json");
-            dynamic jobject = Builtins.Global["Object"];
-            object[] keys = jobject.keys(json);
-            foreach (object key in keys)
+            dynamic jquery = Builtins.Global["$"];
+            dynamic progress = jquery("#progress-bar").show();
+            try
             {
-                Enchantments.Add(new Enchantment(key.ToString(), (object)json[key]));
+                dynamic getCurrentLanguage = Builtins.Global["getCurrentLanguage"];
+                dynamic json = await XMLHttpRequest.FetchJsonAsync($"https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.{(string)getCurrentLanguage()}.json");
+                dynamic Object = Builtins.Global["Object"];
+                object[] keys = Object.keys(json);
+                foreach (object key in keys)
+                {
+                    Enchantments.Add(new Enchantment(key.ToString(), (object)json[key]));
+                }
+                Items = Enchantments.MaxByItems().Items;
             }
-            Items = Enchantments.MaxByItems().Items;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                progress.hide();
+            }
         }
 
         private static string GetItemList(string text, int initialPenalty)
