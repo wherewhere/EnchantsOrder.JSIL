@@ -21,7 +21,7 @@ function getCurrentLanguage() {
 }
 
 function loadResource(language) {
-    var url = "../strings/" + language + "/resources.rejson";
+    var url = "./strings/" + language + "/resources.rejson";
     if (typeof fetch === "undefined") {
         return new function () {
             var isCompleted, results, error;
