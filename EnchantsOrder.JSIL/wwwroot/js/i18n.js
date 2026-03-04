@@ -1,3 +1,4 @@
+/** @typedef {import("@types/winjs")} */
 "use strict";
 
 function getCurrentLanguage() {
@@ -8,7 +9,7 @@ function getCurrentLanguage() {
             ["zh-hans", "zh-cn", "zh-hans-cn", "zh-sg", "zh-hans-sg"]
         ];
     var fallbackLanguage = "en-US";
-    var languages = navigator.languages || [navigator.language || fallbackLanguage];
+    var languages = navigator.languages || [navigator.language || navigator.userLanguage || navigator.browserLanguage || fallbackLanguage];
     for (var i = 0; i < languages.length; i++) {
         var lang = languages[i].toLowerCase();
         for (var j = 0; j < supportLanguages.length; j++) {
@@ -20,65 +21,28 @@ function getCurrentLanguage() {
     return fallbackLanguage;
 }
 
+/**
+ * @param {string} language
+ */
 function loadResource(language) {
     var url = "./strings/" + language + "/resources.rejson";
     if (typeof fetch === "undefined") {
-        return new function () {
-            var isCompleted, results, error;
-            var request = typeof XDomainRequest === "undefined" ? new XMLHttpRequest() : new XDomainRequest();
-            function onError(ex) {
-                isCompleted = true;
-                error = ex;
-            }
-            function invokeCallbacks(callbacks, value) {
-                for (var i = 0; i < callbacks.length; i++) {
-                    try { callbacks[i](value); }
-                    catch (_) { }
-                }
-            }
-            var onFulfilleds = [];
-            var onRejecteds = [];
-            this.then = function (onFulfilled, onRejected) {
-                if (isCompleted) {
-                    if (error) {
-                        if (onRejected) {
-                            onRejected(error);
-                        }
-                    }
-                    else {
-                        if (onFulfilled) {
-                            onFulfilled(results);
-                        }
-                    }
-                }
-                else {
-                    if (onFulfilled) {
-                        onFulfilleds.push(onFulfilled);
-                    }
-                    if (onRejected) {
-                        onRejecteds.push(onRejected);
-                    }
-                }
-            }
-            this.GetAwaiter = function () {
-                return ((new (EnchantsOrder.JSIL.Common.Promise$b1.Of(System.Object))(this))).GetAwaiter();
-            }
+        var IPromise = typeof Promise === "undefined" ? WinJS.Promise : Promise;
+        return new IPromise(function (resolve, reject) {
+            var request = new XMLHttpRequest();
             request.open("GET", url, true);
             request.onload = function () {
                 try {
-                    isCompleted = true;
-                    results = typeof JSON === "undefined" ? eval('(' + request.responseText + ')') : JSON.parse(request.responseText);
-                    invokeCallbacks(onFulfilleds, window.strings = results);
+                    resolve(window.strings = JSON.parse(request.responseText));
                 }
                 catch (ex) {
-                    error = ex;
-                    invokeCallbacks(onRejecteds, error);
+                    reject(ex);
                 }
             };
-            request.onerror = onError;
-            request.ontimeout = onError;
+            request.onerror = reject;
+            request.ontimeout = reject;
             request.send();
-        }
+        });
     }
     else {
         return fetch(url)
@@ -90,9 +54,6 @@ function loadResource(language) {
 (function () {
     var lang = getCurrentLanguage();
     if (lang !== "en-US") {
-        loadResource(lang).then(function () {
-            WinJS.Resources.processAll();
-            document.documentElement.lang = lang;
-        });
+        loadResource(lang).then(function () { WinJS.Resources.processAll(document.documentElement); });
     }
 })();

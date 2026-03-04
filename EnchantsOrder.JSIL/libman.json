@@ -15,8 +15,10 @@
       "files": [
         "css/ui-dark.min.css",
         "fonts/Symbols.ttf",
+        "js/base.js",
         "js/base.min.js",
         "js/base.min.js.map",
+        "js/ui.js",
         "js/ui.min.js",
         "js/ui.min.js.map"
       ],

@@ -1,4 +1,5 @@
-﻿"use strict";
+﻿/** @typedef {import("@types/winjs")} */
+"use strict";
 
 function runMain() {
     var asm = JSIL.GetAssembly("EnchantsOrder.JSIL", true);
@@ -111,10 +112,11 @@ function runMain() {
         });
     }
 
+    WinJS.Promise.prototype.GetAwaiter = function () {
+        return ((new (EnchantsOrder.JSIL.Common.Promise$b1.Of(System.Object))(this))).GetAwaiter();
+    }
     if (typeof Promise !== "undefined") {
-        Promise.prototype.GetAwaiter = function () {
-            return ((new (EnchantsOrder.JSIL.Common.Promise$b1.Of(System.Object))(this))).GetAwaiter();
-        }
+        Promise.prototype.GetAwaiter = WinJS.Promise.prototype.GetAwaiter;
     }
 
     JSIL.InvokeEntryPoint(asm, []);

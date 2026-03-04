@@ -8,7 +8,7 @@ namespace EnchantsOrder.JSIL.Common
     /// </summary>
     public sealed class XMLHttpRequest
     {
-        private readonly dynamic request = Builtins.Eval("typeof XDomainRequest === 'undefined' ? new XMLHttpRequest() : new XDomainRequest()");
+        private readonly dynamic request = Builtins.Eval("new XMLHttpRequest()");
 
         /// <summary>
         /// The read-only <see cref="XMLHttpRequest"/> property <see cref="ResponseText"/> returns the text received from a server following a request being sent.
@@ -84,8 +84,8 @@ namespace EnchantsOrder.JSIL.Common
             else
             {
                 string responseText = await FetchAsync(url);
-                dynamic json = Builtins.Global["JSON"];
-                return Builtins.IsTruthy((object)json) ? json.parse(responseText) : Builtins.Eval($"({responseText})");
+                dynamic JSON = Builtins.Global["JSON"];
+                return JSON.parse(responseText);
             }
         }
     }

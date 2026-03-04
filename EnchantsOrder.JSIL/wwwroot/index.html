@@ -1,12 +1,12 @@
-<html lang="en-US">
+<html lang="en-US" data-win-res="{ lang: 'lang' }">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enchants Order</title>
-    <meta name="description" content="Get the best order for enchanting." />
-    <meta name="theme-color" content="#f2f2f2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#171717" media="(prefers-color-scheme: dark)" />
+    <title data-win-res="{ textContent: 'title' }">Enchants Order</title>
+    <meta name="description" content="Get the best order for enchanting." data-win-res="{ content: 'description' }" />
+    <meta name="theme-color" content="#fff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/png" sizes="256x256"
           href="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png" />
 
@@ -19,19 +19,19 @@
             height: 28px;
         }
 
-        #loadingProgress #progressBar {
-            background: #0078d7;
-            position: absolute;
-            z-index: 4;
-            bottom: 0;
-            width: 100%;
-            height: 3px;
-        }
+            #loadingProgress #progressBar {
+                background: #0078d7;
+                position: absolute;
+                z-index: 4;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+            }
 
-        #loadingProgress #progressText {
-            position: absolute;
-            font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
-        }
+            #loadingProgress #progressText {
+                position: absolute;
+                font-family: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, Menlo, Monaco, "Courier New", monospace;
+            }
     </style>
 
     <meta name="google-site-verification" content="TPDbPzhpaqYCFwTabtkmyHbwnULZEHrAihJNMsmpsks">
@@ -50,7 +50,7 @@
     </script>
     <script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" type="text/javascript" async></script>
     <script type="text/javascript">
-        window.clarity = window.clarity || function () {
+        window.clarity = window.clarity || function() {
             (window.clarity.q = window.clarity.q || []).push(arguments);
         };
     </script>
@@ -83,6 +83,23 @@
 </head>
 
 <body class="win-ui-dark win-type-body" onload="onLoad()">
+    <script type="text/javascript">
+        (function() {
+            function applyColorScheme(isLight) {
+                if (isLight) {
+                    document.body.classList.add("win-ui-light");
+                    document.body.classList.remove("win-ui-dark");
+                }
+                else {
+                    document.body.classList.add("win-ui-dark");
+                    document.body.classList.remove("win-ui-light");
+                }
+            }
+            var scheme = matchMedia("(prefers-color-scheme: light)");
+            scheme.addListener(function(e) { applyColorScheme(e.matches); });
+            applyColorScheme(scheme.matches);
+        })();
+    </script>
     <progress id="progress-bar" class="win-progress-bar" style="display: none;"></progress>
     <div class="root">
         <h1 id="title" class="win-type-header" data-win-res="{ textContent: 'title' }">Enchants Order</h1>
@@ -97,7 +114,7 @@
                                 Initial Penalty
                             </h5>
                             <input id="enchants-object-penalty-input" class="win-textbox" type="number" value="0"
-                                   title="Set the initial penalty of the item witch you want to enchant."
+                                   min="0" title="Set the initial penalty of the item witch you want to enchant."
                                    data-win-res="{ title: 'penalty-title' }" />
                         </label>
                     </span>
@@ -123,7 +140,7 @@
                                 Level
                             </h5>
                             <input id="enchants-enchantment-level-input" class="win-textbox" type="number" value="1"
-                                   title="Set the level of the target enchantment."
+                                   min="1" title="Set the level of the target enchantment."
                                    data-win-res="{ title: 'level-title' }" />
                         </label>
                         <label>
@@ -133,14 +150,14 @@
                             </h5>
                             <input id="enchants-enchantment-weight-input" class="win-textbox" type="number" value="1"
                                    title="Set the weight of the target enchantment. Do not change if you are not sure what it is."
-                                   data-win-res="{ title: 'weight-title' }" />
+                                   min="1" data-win-res="{ title: 'weight-title' }" />
                         </label>
                         <div class="item-group">
-                            <button id="enchants-enchantment-add" class="win-button" title="Add" type="button"
+                            <button id="enchants-enchantment-add" class="win-button" type="button"
                                     data-win-res="{ textContent: 'add' }">
                                 Add
                             </button>
-                            <button id="enchants-enchantment-start" class="win-button" title="Start" type="button"
+                            <button id="enchants-enchantment-start" class="win-button" type="button"
                                     data-win-res="{ textContent: 'start' }">
                                 Start
                             </button>
@@ -154,9 +171,14 @@
                             <div class="wanted-list-root">
                                 <div>
                                     <span data-win-bind="innerText: Name"></span><br />
-                                    Level: <span data-win-bind="innerText: Level"></span>
-                                    Weight: <span data-win-bind="innerText: Weight"></span>
-                                    Experience: <span data-win-bind="innerText: Experience"></span>
+                                    <span data-win-res="{ textContent: 'level' }">Level</span>:
+                                    <span data-win-bind="innerText: Level"></span>
+                                    |
+                                    <span data-win-res="{ textContent: 'weight' }">Weight</span>:
+                                    <span data-win-bind="innerText: Weight"></span>
+                                    |
+                                    <span data-win-res="{ textContent: 'experience' }">Experience</span>:
+                                    <span data-win-bind="innerText: Experience"></span>
                                 </div>
                                 <button title="Delete" class="win-button" type="button"
                                         onclick="deleteEnchantment(this)"
@@ -184,7 +206,7 @@
                                 data-win-res="{ textContent: 'penalty' }">
                                 Use Presets
                             </h5>
-                            <input id="items-object-penalty-input" class="win-textbox" type="number" value="0"
+                            <input id="items-object-penalty-input" class="win-textbox" type="number" value="0" min="0"
                                    title="Set the initial penalty of the item witch you want to enchant."
                                    data-win-res="{ title: 'penalty-title' }" />
                         </label>
@@ -195,7 +217,7 @@
                             <select id="items-object-select-selector" class="win-dropdown"
                                     title="Select the target item by name." placeholder="Choose Item"
                                     data-win-res="{ title: 'item-title', placeholder: 'item' }">
-                                <option style="display:none;" disabled selected
+                                <option style="display:none;" value disabled selected
                                         data-win-res="{ textContent: 'loading' }">
                                     Loading...
                                 </option>

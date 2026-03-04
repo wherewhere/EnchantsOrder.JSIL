@@ -91,6 +91,10 @@ h5.win-type-base {
     flex: 1;
 }
 
+.win-code {
+    font-family: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, Menlo, Monaco, "Courier New", monospace;
+}
+
 .pivot-container {
     flex: 1;
     display: flex;
@@ -121,6 +125,6 @@ h5.win-type-base {
         }
 
 .results-output {
-    margin: 0 1px;
+    margin: 12px 1px 0 1px;
     overflow-x: auto;
 }

@@ -18,8 +18,7 @@
       System.Index;
       System.Range;
       System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
-      System.Runtime.CompilerServices.IsExternalInit;
-      System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute
+      System.Runtime.CompilerServices.IsExternalInit
     </PolySharpIncludeGeneratedTypes>
   </PropertyGroup>
 
@@ -36,6 +35,22 @@
 
   <ItemGroup>
     <Reference Include="$(PkgJSIL_Compiler)\tools\JSIL.Meta.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resource\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resource\Resource.resx">
+      <CustomToolNamespace>EnchantsOrder.JSIL.Properties</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,8 +1,10 @@
 ﻿using EnchantsOrder.JSIL.Common;
 using EnchantsOrder.JSIL.Models;
+using EnchantsOrder.JSIL.Properties;
 using EnchantsOrder.Models;
 using JSIL;
 using System.Collections;
+using System.Globalization;
 using System.Text;
 using Enchantment = EnchantsOrder.JSIL.Models.Enchantment;
 
@@ -18,14 +20,12 @@ namespace EnchantsOrder.JSIL
             dynamic WinJS = Builtins.Global["WinJS"];
             WinJS.Application.start();
 
-            dynamic jquery = Builtins.Global["$"];
-            jquery((Action)OnLoaded);
+            JQueryStatic.Instance.Invoke((Action)OnLoaded);
         }
 
         private static async void OnLoaded()
         {
-            dynamic jquery = Builtins.Global["$"];
-            jquery("#progress-bar").removeAttr("style");
+            _ = JQueryStatic.Instance.Invoke("#progress-bar").RemoveAttr("style");
             await InitializeEnchantmentsAsync();
             InitializeEnchants();
             InitializeItems();
@@ -33,13 +33,13 @@ namespace EnchantsOrder.JSIL
 
         private static void InitializeEnchants()
         {
-            dynamic jquery = Builtins.Global["$"];
-            dynamic name = jquery("#enchants-enchantment-name-selector");
+            JQueryStatic jquery = JQueryStatic.Instance;
+            JQuery name = jquery.Invoke("#enchants-enchantment-name-selector");
             dynamic selector = name[0].winControl;
 
-            dynamic penalty = jquery("#enchants-object-penalty-input");
-            dynamic level = jquery("#enchants-enchantment-level-input");
-            dynamic weight = jquery("#enchants-enchantment-weight-input");
+            JQuery penalty = jquery.Invoke("#enchants-object-penalty-input");
+            JQuery level = jquery.Invoke("#enchants-enchantment-level-input");
+            JQuery weight = jquery.Invoke("#enchants-enchantment-weight-input");
 
             selector.addEventListener("suggestionsrequested", new Action<dynamic>(eventInfo =>
             {
@@ -56,104 +56,95 @@ namespace EnchantsOrder.JSIL
                 Enchantment enchantment = Enchantments.FirstOrDefault(x => x.Name.Equals(queryText, StringComparison.OrdinalIgnoreCase));
                 if (enchantment != null)
                 {
-                    level.val(enchantment.Level);
-                    weight.val(enchantment.Weight);
+                    _ = level.Val(enchantment.Level);
+                    _ = weight.Val(enchantment.Weight);
                     selector._prevQueryText = enchantment.Name;
                 }
             }));
 
             dynamic enchantments = Builtins.Eval("new WinJS.Binding.List([])");
-            jquery("#enchants-wanted-list")[0].winControl.itemDataSource = enchantments.dataSource;
+            dynamic listView = jquery.Invoke("#enchants-wanted-list")[0].winControl;
+            listView.itemDataSource = enchantments.dataSource;
 
-            dynamic wantedGroup = jquery("#enchants-wanted-group").removeAttr("style").hide();
-            dynamic resultsGroup = jquery("#enchants-results-group").removeAttr("style").hide();
+            JQuery wantedGroup = jquery.Invoke("#enchants-wanted-group").RemoveAttr("style").Hide();
+            JQuery resultsGroup = jquery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
 
-            jquery("#enchants-enchantment-add").click(new Action(() =>
+            jquery.Invoke("#enchants-enchantment-add").Click(_ =>
             {
                 string name = selector.queryText;
-                int levelValue = int.Parse((string)level.val());
-                int weightValue = int.Parse((string)weight.val());
-                global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
-                enchantments.push(enchantment);
-                wantedGroup.show();
-            }));
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    int levelValue = int.Parse((string)level.Val());
+                    int weightValue = int.Parse((string)weight.Val());
+                    global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
+                    enchantments.push(enchantment);
+                    _ = wantedGroup.Show();
+                }
+            });
 
             dynamic window = Builtins.Global["window"];
-            window.deleteEnchantment = new Action<dynamic>(e =>
+            window.deleteEnchantment = new Action<object>(e =>
             {
                 try
                 {
-                    string name = e.enchantsName;
-                    int level = e.enchantsLevel;
-                    int weight = e.enchantsWeight;
-                    string key = jquery(e).parents(".win-template").attr("aria-posinset");
-                    dynamic item = enchantments.getItemFromKey(key);
-                    if (Builtins.IsTruthy((object)item))
-                    {
-                        global::EnchantsOrder.Models.Enchantment data = item.data;
-                        if (data.Name == name
-                            && data.Level == level
-                            && data.Weight == weight)
-                        {
-                            enchantments.dataSource.remove(key);
-                            return;
-                        }
-                    }
-                    for (int i = 0; i < enchantments.length; i++)
-                    {
-                        item = enchantments.getItem(i);
-                        global::EnchantsOrder.Models.Enchantment data = item.data;
-                        if ((string)item.key != key
-                            && data.Name == name
-                            && data.Level == level
-                            && data.Weight == weight)
-                        {
-                            enchantments.dataSource.remove(item.key);
-                            return;
-                        }
-                    }
+                    JQuery template = jquery.Invoke(e).Parents(".win-template");
+                    object index = listView.indexOfElement(template[0]);
+                    enchantments.splice(index, 1);
                 }
                 finally
                 {
                     if (enchantments.length == 0)
                     {
-                        wantedGroup.hide();
-                        resultsGroup.hide();
+                        _ = wantedGroup.Hide();
+                        _ = resultsGroup.Hide();
                     }
                 }
             });
 
-            jquery("#enchants-enchantment-start").click(new Action(() =>
+            _ = jquery.Invoke("#enchants-enchantment-start").Click(_ =>
             {
-                int penaltyValue = int.Parse((string)penalty.val());
-                jquery("#enchants-results-output").text(new ListReader<global::EnchantsOrder.Models.Enchantment>((object)enchantments).Ordering(penaltyValue));
-                resultsGroup.show();
-            }));
+                ListReader<global::EnchantsOrder.Models.Enchantment> reader = new((object)enchantments);
+                if (reader.Count > 0)
+                {
+                    int penaltyValue = int.Parse((string)penalty.Val());
+                    _ = jquery.Invoke("#enchants-results-output").Text(reader.Ordering(penaltyValue).ToCultureString());
+                    _ = resultsGroup.Show();
+                }
+            });
         }
 
         private static void InitializeItems()
         {
-            dynamic jquery = Builtins.Global["$"];
-            dynamic item = jquery("#items-object-select-selector");
-            dynamic penalty = jquery("#items-object-penalty-input");
+            JQueryStatic jquery = JQueryStatic.Instance;
+            JQuery item = jquery.Invoke("#items-object-select-selector");
+            JQuery penalty = jquery.Invoke("#items-object-penalty-input");
 
-            item.html("<option style='display: none' disabled selected>Choose Item</option>" + string.Join("\n", Items.Select(x => $"<option>{x}</option>")));
+            _ = item.Html(
+                $"""
+                <option style='display: none' value disabled selected>{Resource.ChooseItem}</option>
+                {string.Join("\n", Items.Select(x => $"<option>{x}</option>"))}
+                """);
 
-            dynamic resultsGroup = jquery("#items-results-group").removeAttr("style").hide();
+            JQuery resultsGroup = jquery.Invoke("#items-results-group").RemoveAttr("style").Hide();
 
-            item.change(new Action(() =>
+            item.Change(OnChange);
+            penalty.Change(OnChange);
+
+            void OnChange(object _)
             {
-                string itemName = item.val();
-                int penaltyValue = int.Parse((string)penalty.val());
-                jquery("#items-results-output").text(GetItemList(itemName, penaltyValue));
-                resultsGroup.show();
-            }));
+                string itemName = item.Val();
+                if (!string.IsNullOrWhiteSpace(itemName))
+                {
+                    int penaltyValue = int.Parse((string)penalty.Val());
+                    _ = jquery.Invoke("#items-results-output").Text(GetItemList(itemName, penaltyValue));
+                    resultsGroup.Show();
+                }
+            }
         }
 
         private static async Task InitializeEnchantmentsAsync()
         {
-            dynamic jquery = Builtins.Global["$"];
-            dynamic progress = jquery("#progress-bar").show();
+            JQuery progress = JQueryStatic.Instance.Invoke("#progress-bar").Show();
             try
             {
                 dynamic getCurrentLanguage = Builtins.Global["getCurrentLanguage"];
@@ -172,7 +163,7 @@ namespace EnchantsOrder.JSIL
             }
             finally
             {
-                progress.hide();
+                _ = progress.Hide();
             }
         }
 
@@ -256,7 +247,7 @@ namespace EnchantsOrder.JSIL
                     {
                         _ = builder.AppendLine("*****************");
                         OrderingResults results = list.Ordering(initialPenalty);
-                        _ = builder.AppendLine(results.ToString());
+                        _ = builder.AppendLine(results.ToCultureString());
                     }
                     catch (Exception ex)
                     {
@@ -278,9 +269,11 @@ namespace EnchantsOrder.JSIL
 
     file readonly struct ListReader<T>(dynamic list) : IEnumerable<T>
     {
+        public int Count => list.length;
+
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < list.length; i++)
+            for (int i = 0; i < Count; i++)
             {
                 yield return (T)list.getAt(i);
             }
@@ -338,6 +331,68 @@ namespace EnchantsOrder.JSIL
             list.Sort((a, b) => string.Compare(keySelector(a), keySelector(b)));
 
             return list;
+        }
+
+        public static string ToCultureString(this OrderingResults results)
+        {
+            CultureInfo culture = Resource.Culture ?? CultureInfo.CurrentUICulture ?? CultureInfo.CurrentCulture;
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase))
+            {
+                return results.ToString();
+            }
+            else
+            {
+                StringBuilder builder = new();
+                foreach (EnchantmentStep step in results.Steps)
+                {
+                    _ = builder.AppendLine(step.ToCultureString());
+                }
+                return builder.Append(Resource.PenaltyLevel).Append(": ").AppendLine(results.Penalty.ToString())
+                              .Append(Resource.MaxExperienceLevel).Append(": ").AppendLine(results.MaxExperience.ToString())
+                              .Append(Resource.TotalExperienceLevel).Append(": ").Append(results.TotalExperience.ToString())
+                              .ToString();
+            }
+        }
+
+        public static string ToCultureString(this EnchantmentStep step)
+        {
+            CultureInfo culture = Resource.Culture ?? CultureInfo.CurrentUICulture ?? CultureInfo.CurrentCulture;
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase))
+            {
+                return step.ToString();
+            }
+            else
+            {
+                StringBuilder builder = new();
+                _ = builder.Append(Resource.Step).Append(' ').Append(step.Step).Append(':');
+                int half = step.Count / 2;
+                for (int i = half; i > 0; i--)
+                {
+                    bool flag = step.Count == 2;
+                    int index = (half * 2) - (i * 2);
+                    _ = builder.Append(' ');
+                    if (!flag)
+                    {
+                        _ = builder.Append('(');
+                    }
+                    _ = builder.Append(step[index])
+                               .Append(" + ")
+                               .Append(step[index + 1]);
+                    if (!flag)
+                    {
+                        _ = builder.Append(')');
+                    }
+                    if (index + 2 != step.Count)
+                    {
+                        _ = builder.Append(" +");
+                    }
+                }
+                if ((step.Count & 1) == 1)
+                {
+                    _ = builder.Append(' ').Append(step[^1]);
+                }
+                return builder.ToString();
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 {
+  "lang": "en-US",
   "title": "Enchants Order",
+  "description": "Get the best order for enchanting.",
   "enchants": "Enchants",
   "penalty": "Initial Penalty",
   "penalty-title": "Set the initial penalty of the item witch you want to enchant.",
@@ -12,6 +14,7 @@
   "weight": "Weight",
   "weight-title": "Set the weight of the target enchantment. Do not change if you are not sure what it is.",
   "add": "Add",
+  "experience": "Experience",
   "start": "Start",
   "wanted": "Enchantment List",
   "results": "Results",
