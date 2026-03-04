@@ -54,7 +54,8 @@ h5.win-type-base {
 }
 
 .win-pivot-item .win-pivot-item-content {
-    padding: 0 26px;
+    margin: 0 7px;
+    padding: 0 19px;
 }
 
 .win-button,

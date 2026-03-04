@@ -24,12 +24,6 @@ namespace EnchantsOrder.JSIL.Common
         public dynamic this[int index] => jquery[index];
 
         /// <summary>
-        /// Get the value of an attribute for the first element in the set of matched elements.
-        /// </summary>
-        /// <param name="attributeName">The name of the attribute to get.</param>
-        public string Attr(string attributeName) => jquery.attr(attributeName);
-
-        /// <summary>
         /// Set the HTML contents of each element in the set of matched elements.
         /// </summary>
         /// <param name="html">A string of HTML to set as the content of each matched element.</param>

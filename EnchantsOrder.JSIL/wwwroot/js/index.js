@@ -43,7 +43,7 @@ function runMain() {
         get: function () {
             return function (source) {
                 var value;
-                var e = System.Collections.Generic.IEnumerable$b1.Of(System.Int32).GetEnumerator.Call(source, null);
+                var e = JSIL.GetEnumerator(source);
                 try {
                     if (!e.MoveNext()) {
                         throw new System.Exception("NoElementsException");
@@ -70,7 +70,7 @@ function runMain() {
         get: function () {
             return function (source) {
                 var value;
-                var e = System.Collections.Generic.IEnumerable$b1.Of(System.Int64).GetEnumerator.Call(source, null);
+                var e = JSIL.GetEnumerator(source);
                 try {
                     if (!e.MoveNext()) {
                         throw new System.Exception("NoElementsException");
