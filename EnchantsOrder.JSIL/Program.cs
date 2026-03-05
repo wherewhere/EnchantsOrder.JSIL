@@ -37,65 +37,71 @@ namespace EnchantsOrder.JSIL
         private static void InitializeEnchants()
         {
             JQuery name = JQuery.Invoke("#enchants-enchantment-name-selector");
-            dynamic selector = name.GetItem(0).winControl;
+            IAutoSuggestBox selector = name[0].WinControl.As<IAutoSuggestBox>();
 
             JQuery penalty = JQuery.Invoke("#enchants-object-penalty-input");
             JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
             JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
 
-            selector.addEventListener("suggestionsrequested", new Action<dynamic>(eventInfo =>
-            {
-                string queryText = eventInfo.detail.queryText;
-                dynamic collection = eventInfo.detail.searchSuggestionCollection;
-                collection.appendQuerySuggestions(
-                    (string.IsNullOrWhiteSpace(queryText) ? Enchantments
-                        : Enchantments.Where(x => x.Name.Contains(queryText))).Select(x => x.Name).ToArray());
-            }));
-
-            selector.addEventListener("querysubmitted", new Action<dynamic>(eventInfo =>
-            {
-                string queryText = eventInfo.detail.queryText;
-                Enchantment enchantment = Enchantments.FirstOrDefault(x => x.Name.Equals(queryText, StringComparison.OrdinalIgnoreCase));
-                if (enchantment != null)
+            selector.AddEventListener<IEvent<ISearchBoxSuggestionsRequestedEventArgs>>(
+                "suggestionsrequested",
+                eventInfo =>
                 {
-                    _ = level.Val(enchantment.Level);
-                    _ = weight.Val(enchantment.Weight);
-                    selector._prevQueryText = enchantment.Name;
-                }
-            }));
+                    string queryText = eventInfo.Detail.QueryText;
+                    ISearchSuggestionCollection collection = eventInfo.Detail.SearchSuggestionCollection;
+                    collection.AppendQuerySuggestions(
+                        [.. (string.IsNullOrWhiteSpace(queryText) ? Enchantments
+                            : Enchantments.Where(x => x.Name.Contains(queryText))).Select(x => x.Name)]);
+                });
 
-            dynamic enchantments = Builtins.Eval("new WinJS.Binding.List([])");
-            dynamic listView = JQuery.Invoke("#enchants-wanted-list").GetItem(0).winControl;
-            listView.itemDataSource = enchantments.dataSource;
+            selector.AddEventListener<IEvent<ISearchBoxEventArgs>>(
+                "querysubmitted",
+                eventInfo =>
+                {
+                    string queryText = eventInfo.Detail.QueryText;
+                    Enchantment enchantment = Enchantments.FirstOrDefault(x => x.Name.Equals(queryText, StringComparison.OrdinalIgnoreCase));
+                    if (enchantment != null)
+                    {
+                        _ = level.Val(enchantment.Level);
+                        _ = weight.Val(enchantment.Weight);
+                        selector.PrevQueryText = enchantment.Name;
+                    }
+                });
+
+            BindingList<global::EnchantsOrder.Models.Enchantment> enchantments = new([]);
+            IListView<global::EnchantsOrder.Models.Enchantment> listView =
+                JQuery.Invoke("#enchants-wanted-list")[0].WinControl.As<IListView<global::EnchantsOrder.Models.Enchantment>>();
+            listView.ItemDataSource = enchantments.dataSource;
 
             JQuery wantedGroup = JQuery.Invoke("#enchants-wanted-group").RemoveAttr("style").Hide();
             JQuery resultsGroup = JQuery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
 
             JQuery.Invoke("#enchants-enchantment-add").Click(_ =>
             {
-                string name = selector.queryText;
+                string name = selector.QueryText;
                 if (!string.IsNullOrWhiteSpace(name))
                 {
                     int levelValue = int.Parse(level.Val<string>());
                     int weightValue = int.Parse(weight.Val<string>());
                     global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
-                    enchantments.push(enchantment);
+                    enchantments.Push(enchantment);
                     _ = wantedGroup.Show();
                 }
             });
 
-            dynamic window = Builtins.Global["window"];
-            window.deleteEnchantment = new Action<object>(e =>
+            [JSReplacement("window.deleteEnchantment = $action")]
+            static extern void SetDeleteEnchantment(Action<IHTMLElement> action);
+            SetDeleteEnchantment(e =>
             {
                 try
                 {
                     JQuery template = JQuery.Invoke(e).Parents(".win-template");
-                    object index = listView.indexOfElement(template.GetItem(0));
-                    enchantments.splice(index, 1);
+                    int index = listView.IndexOfElement(template[0]);
+                    enchantments.Splice(index, 1);
                 }
                 finally
                 {
-                    if (enchantments.length == 0)
+                    if (enchantments.Length == 0)
                     {
                         _ = wantedGroup.Hide();
                         _ = resultsGroup.Hide();
@@ -105,7 +111,8 @@ namespace EnchantsOrder.JSIL
 
             _ = JQuery.Invoke("#enchants-enchantment-start").Click(_ =>
             {
-                ListReader<global::EnchantsOrder.Models.Enchantment> reader = new((object)enchantments);
+                BindingListImplement.ListReader<global::EnchantsOrder.Models.Enchantment> reader =
+                    enchantments.GetEnumerable();
                 if (reader.Count > 0)
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
@@ -148,13 +155,13 @@ namespace EnchantsOrder.JSIL
             JQuery progress = JQuery.Invoke("#progress-bar").Show();
             try
             {
-                dynamic getCurrentLanguage = Builtins.Global["getCurrentLanguage"];
-                dynamic json = await XMLHttpRequest.FetchJsonAsync($"https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.{(string)getCurrentLanguage()}.json");
-                dynamic Object = Builtins.Global["Object"];
-                object[] keys = Object.keys(json);
-                foreach (object key in keys)
+                [JSReplacement("getCurrentLanguage()")]
+                static extern string getCurrentLanguage();
+                object json = await XMLHttpRequest.FetchJsonAsync($"https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.{getCurrentLanguage()}.json");
+                string[] keys = json.Keys();
+                foreach (string key in keys)
                 {
-                    Enchantments.Add(new Enchantment(key.ToString(), (object)json[key]));
+                    Enchantments.Add(new Enchantment(key.ToString(), json.GetItem<object>(key)));
                 }
                 Items = Enchantments.MaxByItems().Items;
             }
@@ -263,32 +270,6 @@ namespace EnchantsOrder.JSIL
 
         [JSReplacement("console.log($message)")]
         internal static extern void Log(object message);
-    }
-
-    [JSImmutable]
-    file readonly struct ListReader<T>(object list) : IEnumerable<T>
-    {
-        public int Count
-        {
-            get
-            {
-                return length(list);
-                [JSReplacement("$list.length")]
-                extern static int length(object list);
-            }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                yield return getAt(list, i);
-                [JSReplacement("$list.getAt($index)")]
-                extern static T getAt(object list, int index);
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     file static class Extensions

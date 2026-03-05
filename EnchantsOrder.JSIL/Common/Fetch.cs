@@ -3,22 +3,20 @@ using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Common
 {
-    public sealed class Fetch
+    public static class Fetch
     {
-        public static bool IsSupported { get; } = Builtins.IsTruthy(Builtins.Global["fetch"]);
+        public static bool IsSupported { get; } = Builtins.IsFalsy(Builtins.IsFalsy(Builtins.Global["fetch"]));
 
         [JSReplacement("fetch($url)")]
-        public static extern Promise<Response> Invoke(string url);
+        public static extern IPromise<IResponse> Invoke(string url);
     }
 
-    public sealed class Response;
-
-    public static class ResponseImplement
+    public interface IResponse
     {
-        [JSReplacement("$response.json()")]
-        public static extern Promise<dynamic> Json(this Response response);
+        [JSReplacement("$this.json()")]
+        IPromise<object> Json();
 
-        [JSReplacement("$response.json()")]
-        public static extern Promise<string> Text(this Response response);
+        [JSReplacement("$this.text()")]
+        IPromise<string> Text();
     }
 }

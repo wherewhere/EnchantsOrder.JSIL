@@ -57,11 +57,11 @@ namespace EnchantsOrder.JSIL.Common
         /// <param name="type">A case-sensitive string representing the event type to listen for.</param>
         /// <param name="listener">The object that receives a notification (an object that implements the Event interface) when an event of the specified type occurs.
         /// This must be <see langword="null"/>, an <see langword="object"/> with a handleEvent() method, or a JavaScript function. See The event listener callback for details on the callback itself.</param>
-        public void AddEventListener(string type, Action<dynamic> listener)
+        public void AddEventListener(string type, Action listener)
         {
             addEventListener(request, type, listener);
             [JSReplacement("$request.addEventListener($type, $listener)")]
-            static extern void addEventListener(object request, string type, Action<dynamic> listener);
+            static extern void addEventListener(object request, string type, Action listener);
         }
 
         public static Task<string> FetchAsync(string url)
@@ -79,7 +79,7 @@ namespace EnchantsOrder.JSIL.Common
             {
                 XMLHttpRequest request = new();
                 request.Open("GET", url);
-                request.AddEventListener("load", e =>
+                request.AddEventListener("load", () =>
                 {
                     try
                     {
@@ -90,15 +90,15 @@ namespace EnchantsOrder.JSIL.Common
                         _ = tcs.TrySetException(ex);
                     }
                 });
-                request.AddEventListener("error", e => _ = tcs.TrySetException(new Exception($"Failed to fetch {url}")));
-                request.AddEventListener("timeout", e => _ = tcs.TrySetException(new TimeoutException($"Timeout while fetching {url}")));
-                request.AddEventListener("abort", e => _ = tcs.TrySetCanceled());
+                request.AddEventListener("error", () => _ = tcs.TrySetException(new Exception($"Failed to fetch {url}")));
+                request.AddEventListener("timeout", () => _ = tcs.TrySetException(new TimeoutException($"Timeout while fetching {url}")));
+                request.AddEventListener("abort", () => _ = tcs.TrySetCanceled());
                 request.Send();
             }
             return tcs.Task;
         }
 
-        public static async Task<dynamic> FetchJsonAsync(string url)
+        public static async Task<object> FetchJsonAsync(string url)
         {
             if (Fetch.IsSupported)
             {

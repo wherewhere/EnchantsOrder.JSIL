@@ -24,17 +24,15 @@
 
   <ItemGroup>
     <PackageReference Include="EnchantsOrder" Version="0.2.7" />
-    <PackageReference Include="JSIL.Compiler" Version="0.9.1-myget1575" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Compiler" Version="0.8.2.10" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Libraries" Version="0.8.2.10" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Meta" Version="0.8.2.10" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Version="1.15.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="$(PkgJSIL_Compiler)\tools\JSIL.Meta.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,7 +55,7 @@
     <ReferenceCopyLocalPaths Include="wwwroot\**\*.*">
       <DestinationSubDirectory>wwwroot\%(RecursiveDir)</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
-    <ReferenceCopyLocalPaths Include="$(PkgJSIL_Compiler)\tools\JS Libraries\**\*.*">
+    <ReferenceCopyLocalPaths Include="$(PkgJSIL_Libraries)\staticwebassets\**\*.*">
       <DestinationSubDirectory>wwwroot\%(RecursiveDir)</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
   </ItemGroup>
