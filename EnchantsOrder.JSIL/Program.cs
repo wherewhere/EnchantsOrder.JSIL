@@ -3,6 +3,7 @@ using EnchantsOrder.JSIL.Models;
 using EnchantsOrder.JSIL.Properties;
 using EnchantsOrder.Models;
 using JSIL;
+using JSIL.Meta;
 using System.Collections;
 using System.Globalization;
 using System.Text;
@@ -13,19 +14,21 @@ namespace EnchantsOrder.JSIL
     public static class Program
     {
         private static object[] Items = [];
+        [JSImmutable]
         private static readonly List<Enchantment> Enchantments = [];
 
         public static void Main(string[] _)
         {
-            dynamic WinJS = Builtins.Global["WinJS"];
-            WinJS.Application.start();
+            start();
+            [JSReplacement("WinJS.Application.start()")]
+            static extern void start();
 
-            JQueryStatic.Instance.Invoke((Action)OnLoaded);
+            JQuery.Invoke(OnLoaded);
         }
 
         private static async void OnLoaded()
         {
-            _ = JQueryStatic.Instance.Invoke("#progress-bar").RemoveAttr("style");
+            _ = JQuery.Invoke("#progress-bar").RemoveAttr("style");
             await InitializeEnchantmentsAsync();
             InitializeEnchants();
             InitializeItems();
@@ -33,13 +36,12 @@ namespace EnchantsOrder.JSIL
 
         private static void InitializeEnchants()
         {
-            JQueryStatic jquery = JQueryStatic.Instance;
-            JQuery name = jquery.Invoke("#enchants-enchantment-name-selector");
-            dynamic selector = name[0].winControl;
+            JQuery name = JQuery.Invoke("#enchants-enchantment-name-selector");
+            dynamic selector = name.GetItem(0).winControl;
 
-            JQuery penalty = jquery.Invoke("#enchants-object-penalty-input");
-            JQuery level = jquery.Invoke("#enchants-enchantment-level-input");
-            JQuery weight = jquery.Invoke("#enchants-enchantment-weight-input");
+            JQuery penalty = JQuery.Invoke("#enchants-object-penalty-input");
+            JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
+            JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
 
             selector.addEventListener("suggestionsrequested", new Action<dynamic>(eventInfo =>
             {
@@ -63,19 +65,19 @@ namespace EnchantsOrder.JSIL
             }));
 
             dynamic enchantments = Builtins.Eval("new WinJS.Binding.List([])");
-            dynamic listView = jquery.Invoke("#enchants-wanted-list")[0].winControl;
+            dynamic listView = JQuery.Invoke("#enchants-wanted-list").GetItem(0).winControl;
             listView.itemDataSource = enchantments.dataSource;
 
-            JQuery wantedGroup = jquery.Invoke("#enchants-wanted-group").RemoveAttr("style").Hide();
-            JQuery resultsGroup = jquery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
+            JQuery wantedGroup = JQuery.Invoke("#enchants-wanted-group").RemoveAttr("style").Hide();
+            JQuery resultsGroup = JQuery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
 
-            jquery.Invoke("#enchants-enchantment-add").Click(_ =>
+            JQuery.Invoke("#enchants-enchantment-add").Click(_ =>
             {
                 string name = selector.queryText;
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    int levelValue = int.Parse((string)level.Val());
-                    int weightValue = int.Parse((string)weight.Val());
+                    int levelValue = int.Parse(level.Val<string>());
+                    int weightValue = int.Parse(weight.Val<string>());
                     global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
                     enchantments.push(enchantment);
                     _ = wantedGroup.Show();
@@ -87,8 +89,8 @@ namespace EnchantsOrder.JSIL
             {
                 try
                 {
-                    JQuery template = jquery.Invoke(e).Parents(".win-template");
-                    object index = listView.indexOfElement(template[0]);
+                    JQuery template = JQuery.Invoke(e).Parents(".win-template");
+                    object index = listView.indexOfElement(template.GetItem(0));
                     enchantments.splice(index, 1);
                 }
                 finally
@@ -101,13 +103,13 @@ namespace EnchantsOrder.JSIL
                 }
             });
 
-            _ = jquery.Invoke("#enchants-enchantment-start").Click(_ =>
+            _ = JQuery.Invoke("#enchants-enchantment-start").Click(_ =>
             {
                 ListReader<global::EnchantsOrder.Models.Enchantment> reader = new((object)enchantments);
                 if (reader.Count > 0)
                 {
-                    int penaltyValue = int.Parse((string)penalty.Val());
-                    _ = jquery.Invoke("#enchants-results-output").Text(reader.Ordering(penaltyValue).ToCultureString());
+                    int penaltyValue = int.Parse(penalty.Val<string>());
+                    _ = JQuery.Invoke("#enchants-results-output").Text(reader.Ordering(penaltyValue).ToCultureString());
                     _ = resultsGroup.Show();
                 }
             });
@@ -115,9 +117,8 @@ namespace EnchantsOrder.JSIL
 
         private static void InitializeItems()
         {
-            JQueryStatic jquery = JQueryStatic.Instance;
-            JQuery item = jquery.Invoke("#items-object-select-selector");
-            JQuery penalty = jquery.Invoke("#items-object-penalty-input");
+            JQuery item = JQuery.Invoke("#items-object-select-selector");
+            JQuery penalty = JQuery.Invoke("#items-object-penalty-input");
 
             _ = item.Html(
                 $"""
@@ -125,18 +126,18 @@ namespace EnchantsOrder.JSIL
                 {string.Join("\n", Items.Select(x => $"<option>{x}</option>"))}
                 """);
 
-            JQuery resultsGroup = jquery.Invoke("#items-results-group").RemoveAttr("style").Hide();
+            JQuery resultsGroup = JQuery.Invoke("#items-results-group").RemoveAttr("style").Hide();
 
             item.Change(OnChange);
             penalty.Change(OnChange);
 
             void OnChange(object _)
             {
-                string itemName = item.Val();
+                string itemName = item.Val<string>();
                 if (!string.IsNullOrWhiteSpace(itemName))
                 {
-                    int penaltyValue = int.Parse((string)penalty.Val());
-                    _ = jquery.Invoke("#items-results-output").Text(GetItemList(itemName, penaltyValue));
+                    int penaltyValue = int.Parse(penalty.Val<string>());
+                    _ = JQuery.Invoke("#items-results-output").Text(GetItemList(itemName, penaltyValue));
                     resultsGroup.Show();
                 }
             }
@@ -144,7 +145,7 @@ namespace EnchantsOrder.JSIL
 
         private static async Task InitializeEnchantmentsAsync()
         {
-            JQuery progress = JQueryStatic.Instance.Invoke("#progress-bar").Show();
+            JQuery progress = JQuery.Invoke("#progress-bar").Show();
             try
             {
                 dynamic getCurrentLanguage = Builtins.Global["getCurrentLanguage"];
@@ -260,22 +261,30 @@ namespace EnchantsOrder.JSIL
             return $"No enchantments found for {text}.";
         }
 
-        internal static void Log(object message)
-        {
-            dynamic console = Builtins.Global["console"];
-            console.log(message);
-        }
+        [JSReplacement("console.log($message)")]
+        internal static extern void Log(object message);
     }
 
-    file readonly struct ListReader<T>(dynamic list) : IEnumerable<T>
+    [JSImmutable]
+    file readonly struct ListReader<T>(object list) : IEnumerable<T>
     {
-        public int Count => list.length;
+        public int Count
+        {
+            get
+            {
+                return length(list);
+                [JSReplacement("$list.length")]
+                extern static int length(object list);
+            }
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Count; i++)
             {
-                yield return (T)list.getAt(i);
+                yield return getAt(list, i);
+                [JSReplacement("$list.getAt($index)")]
+                extern static T getAt(object list, int index);
             }
         }
 

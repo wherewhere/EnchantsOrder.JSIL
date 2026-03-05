@@ -1,28 +1,64 @@
 ﻿using EnchantsOrder.JSIL.Common;
 using EnchantsOrder.Models;
 using JSIL;
+using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Models
 {
-    internal sealed class Enchantment(string name, dynamic token) : IEnchantment
+    internal sealed class Enchantment(string name, object token) : IEnchantment
     {
         /// <inheritdoc/>
-        public int Level => token.levelMax;
-        /// <inheritdoc/>
-        public int Weight => token.weight;
+        public int Level
+        {
+            get
+            {
+                return levelMax(token);
+                [JSReplacement("$token.levelMax")]
+                static extern int levelMax(object token);
+            }
+        }
 
-        public bool Hidden => Builtins.IsTruthy((object)token.hidden);
+        /// <inheritdoc/>
+        public int Weight
+        {
+            get
+            {
+                return weight(token);
+                [JSReplacement("$token.weight")]
+                static extern int weight(object token);
+            }
+        }
+
+        public bool Hidden
+        {
+            get
+            {
+                return hidden(token);
+                [JSReplacement("$token.hidden")]
+                static extern bool hidden(object token);
+            }
+        }
 
         /// <inheritdoc/>
         public string Name => name;
 
-        public object[] Items => token.items;
+        public object[] Items
+        {
+            get
+            {
+                return items(token);
+                [JSReplacement("$token.items")]
+                static extern object[] items(object token);
+            }
+        }
+
         public object[]? Incompatible
         {
             get
             {
-                dynamic incompatible = token.incompatible;
-                return Builtins.IsTruthy((object)incompatible) ? incompatible : null;
+                return incompatible(token);
+                [JSReplacement("$token.incompatible || null")]
+                static extern object[] incompatible(object token);
             }
         }
 

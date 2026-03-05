@@ -1,13 +1,38 @@
-﻿using JSIL;
+﻿using JSIL.Meta;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace EnchantsOrder.JSIL.Common
 {
-    public sealed class Promise<TResult>(object promise)
+    public class Promise;
+    public sealed class Promise<TResult> : Promise;
+
+    public static class PromiseImplement
     {
-        private readonly dynamic promise = promise;
+        public static Promise Then<TSource>(this Promise<TSource> promise, Action<TSource> onFulfilled, Action<object>? onRejected = null)
+        {
+            return then(promise, onFulfilled, onRejected);
+            [JSReplacement("$promise.then(onFulfilled, onRejected)")]
+            static extern Promise then(Promise<TSource> promise, Action<TSource> onFulfilled, Action<object>? onRejected);
+        }
+
+        public static Promise<TResult> Then<TSource, TResult>(this Promise<TSource> promise, Func<TSource, Promise<TResult>> onFulfilled, Action<object>? onRejected = null)
+        {
+            return then(promise, onFulfilled, onRejected);
+            [JSReplacement("$promise.then(onFulfilled)")]
+            static extern Promise<TResult> then(Promise<TSource> promise, Func<TSource, Promise<TResult>> onFulfilled, Action<object>? onRejected);
+        }
+
+        public static PromiseWrapper<TResult>.PromiseAwaiter GetAwaiter<TResult>(this Promise<TResult> promise)
+        {
+            return new PromiseWrapper<TResult>(promise).GetAwaiter();
+        }
+    }
+
+    public sealed class PromiseWrapper<TResult>(Promise<TResult> promise)
+    {
+        [JSImmutable]
+        private readonly Promise<TResult> promise = promise;
         private Action? continuationActions;
 
         public bool IsCompleted { get; private set; }
@@ -20,14 +45,14 @@ namespace EnchantsOrder.JSIL.Common
         public Task<TResult> AsTask()
         {
             TaskCompletionSource<TResult> tcs = new();
-            promise.then(
-                new Action<dynamic>(value => _ = tcs.TrySetResult(value)),
-                new Action<dynamic>(reason => _ = tcs.TrySetException(new Exception(reason.ToString()))));
+            _ = promise.Then(
+                value => _ = tcs.TrySetResult(value),
+                reason => _ = tcs.TrySetException(new Exception(reason.ToString())));
             return tcs.Task;
         }
 
-        [SuppressMessage("Style", "IDE1006:命名样式", Justification = "<挂起>")]
-        public void then(Action<TResult> onFulfilled, Action<object>? onRejected = null) => promise.then(onFulfilled, onRejected);
+        [JSChangeName("then")]
+        public Promise Then(Action<TResult> onFulfilled, Action<object>? onRejected = null) => promise.Then(onFulfilled, onRejected);
 
         /// <summary>
         /// Sets a continuation onto the <see cref="Promise{TResult}"/>.
@@ -44,16 +69,14 @@ namespace EnchantsOrder.JSIL.Common
             else if (continuationActions == null)
             {
                 continuationActions = continuationAction;
-                promise.then(new Action<dynamic, object>((onFulfilled, onRejected) =>
-                {
-                    IsCompleted = true;
-                    Result = onFulfilled;
-                    if (Builtins.IsTruthy(onRejected))
+                _ = promise.Then(
+                    value =>
                     {
-                        Builtins.CreateNamedFunction<Action<object>>("Throw", ["error"], "throw error")(onRejected);
-                    }
-                    continuationActions?.Invoke();
-                }));
+                        IsCompleted = true;
+                        Result = value;
+                        continuationActions?.Invoke();
+                    },
+                    error => Unsafe.Throw(error));
             }
             else
             {
@@ -64,12 +87,14 @@ namespace EnchantsOrder.JSIL.Common
         /// <summary>
         /// Provides an awaiter for awaiting a <see cref="Promise{TResult}"/>.
         /// </summary>
-        public readonly struct PromiseAwaiter(Promise<TResult> task) : ICriticalNotifyCompletion
+        [JSImmutable]
+        public readonly struct PromiseAwaiter(PromiseWrapper<TResult> task) : ICriticalNotifyCompletion
         {
             /// <summary>
             /// The task being awaited.
             /// </summary>
-            private readonly Promise<TResult> m_task = task;
+            [JSImmutable]
+            private readonly PromiseWrapper<TResult> m_task = task;
 
             /// <summary>
             /// Gets whether the task being awaited is completed.
@@ -101,7 +126,7 @@ namespace EnchantsOrder.JSIL.Common
             /// </summary>
             /// <param name="task">The task being awaited.</param>
             /// <param name="continuation">The action to invoke when the await operation completes.</param>
-            internal static void OnCompletedInternal(Promise<TResult> task, Action continuation)
+            internal static void OnCompletedInternal(PromiseWrapper<TResult> task, Action continuation)
             {
                 ArgumentNullException.ThrowIfNull(continuation);
 

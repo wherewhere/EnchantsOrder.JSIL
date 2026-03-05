@@ -39,9 +39,10 @@ function runMain() {
         });
     };
 
-    Object.defineProperty(System.Linq.Enumerable, new JSIL.MethodSignature(System.Int32, [System.Collections.Generic.IEnumerable$b1.Of(System.Int32)]).GetNamedKey("Min", true), {
-        get: function () {
-            return function (source) {
+    JSIL.ImplementExternals("System.Linq.Enumerable", function ($) {
+        $.Method({ Static: true, Public: true }, "Min",
+            new JSIL.MethodSignature(System.Int32, [System.Collections.Generic.IEnumerable$b1.Of(System.Int32)]),
+            function (source) {
                 var value;
                 var e = JSIL.GetEnumerator(source);
                 try {
@@ -62,13 +63,12 @@ function runMain() {
                     }
                 }
                 return value;
-            };
-        }
-    });
+            }
+        );
 
-    Object.defineProperty(System.Linq.Enumerable, new JSIL.MethodSignature(System.Int64, [System.Collections.Generic.IEnumerable$b1.Of(System.Int64)]).GetNamedKey("Max", true), {
-        get: function () {
-            return function (source) {
+        $.Method({ Static: true, Public: true }, "Max",
+            new JSIL.MethodSignature(System.Int64, [System.Collections.Generic.IEnumerable$b1.Of(System.Int64)]),
+            function (source) {
                 var value;
                 var e = JSIL.GetEnumerator(source);
                 try {
@@ -89,8 +89,8 @@ function runMain() {
                     }
                 }
                 return value;
-            };
-        }
+            }
+        );
     });
 
     var appends = [
@@ -113,7 +113,7 @@ function runMain() {
     }
 
     WinJS.Promise.prototype.GetAwaiter = function () {
-        return ((new (EnchantsOrder.JSIL.Common.Promise$b1.Of(System.Object))(this))).GetAwaiter();
+        return ((new (EnchantsOrder.JSIL.Common.PromiseWrapper$b1.Of(System.Object))(this))).GetAwaiter();
     }
     if (typeof Promise !== "undefined") {
         Promise.prototype.GetAwaiter = WinJS.Promise.prototype.GetAwaiter;
