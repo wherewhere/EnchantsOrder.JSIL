@@ -106,6 +106,15 @@ namespace EnchantsOrder.JSIL.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Too Expensive! 的本地化字符串。
+        /// </summary>
+        internal static string TooExpensive {
+            get {
+                return ResourceManager.GetString("TooExpensive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Total Experience Level 的本地化字符串。
         /// </summary>
         internal static string TotalExperienceLevel {

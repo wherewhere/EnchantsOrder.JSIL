@@ -133,6 +133,9 @@
   <data name="Step" xml:space="preserve">
     <value>Step</value>
   </data>
+  <data name="TooExpensive" xml:space="preserve">
+    <value>Too Expensive!</value>
+  </data>
   <data name="TotalExperienceLevel" xml:space="preserve">
     <value>Total Experience Level</value>
   </data>

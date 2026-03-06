@@ -132,6 +132,9 @@
   <data name="Step" xml:space="preserve">
     <value>步骤</value>
   </data>
+  <data name="TooExpensive" xml:space="preserve">
+    <value>过于昂贵！</value>
+  </data>
   <data name="TotalExperienceLevel" xml:space="preserve">
     <value>总经验等级</value>
   </data>

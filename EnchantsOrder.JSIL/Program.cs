@@ -116,7 +116,11 @@ namespace EnchantsOrder.JSIL
                 if (reader.Count > 0)
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
-                    _ = JQuery.Invoke("#enchants-results-output").Text(reader.Ordering(penaltyValue).ToCultureString());
+                    OrderingResults results = reader.Ordering(penaltyValue);
+                    string str = results.ToCultureString();
+                    _ = results.IsTooExpensive
+                        ? JQuery.Invoke("#enchants-results-output").Text($"{str}\n{Resource.TooExpensive}")
+                        : JQuery.Invoke("#enchants-results-output").Text(str);
                     _ = resultsGroup.Show();
                 }
             });
@@ -256,6 +260,10 @@ namespace EnchantsOrder.JSIL
                         _ = builder.AppendLine("*****************");
                         OrderingResults results = list.Ordering(initialPenalty);
                         _ = builder.AppendLine(results.ToCultureString());
+                        if (results.IsTooExpensive)
+                        {
+                            _ = builder.AppendLine(Resource.TooExpensive);
+                        }
                     }
                     catch (Exception ex)
                     {
