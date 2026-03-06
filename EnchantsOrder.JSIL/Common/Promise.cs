@@ -44,7 +44,7 @@ namespace EnchantsOrder.JSIL.Common
             TaskCompletionSource<TResult> tcs = new();
             _ = promise.Then(
                 value => _ = tcs.TrySetResult(value),
-                reason => _ = tcs.TrySetException(new Exception(reason.ToString())));
+                reason => _ = tcs.TrySetException(reason.As<object, Exception>()));
             return tcs.Task;
         }
 

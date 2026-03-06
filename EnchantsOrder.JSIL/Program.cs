@@ -43,7 +43,7 @@ namespace EnchantsOrder.JSIL
             JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
             JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
 
-            selector.AddEventListener<IEvent<ISearchBoxSuggestionsRequestedEventArgs>>(
+            selector.AddEventListener<ICustomEvent<ISearchBoxSuggestionsRequestedEventArgs>>(
                 "suggestionsrequested",
                 eventInfo =>
                 {
@@ -54,7 +54,7 @@ namespace EnchantsOrder.JSIL
                             : Enchantments.Where(x => x.Name.Contains(queryText))).Select(x => x.Name)]);
                 });
 
-            selector.AddEventListener<IEvent<ISearchBoxEventArgs>>(
+            selector.AddEventListener<ICustomEvent<ISearchBoxEventArgs>>(
                 "querysubmitted",
                 eventInfo =>
                 {
@@ -161,13 +161,13 @@ namespace EnchantsOrder.JSIL
                 string[] keys = json.Keys();
                 foreach (string key in keys)
                 {
-                    Enchantments.Add(new Enchantment(key.ToString(), json.GetItem<object>(key)));
+                    Enchantments.Add(new Enchantment(key.ToString(), json.GetItem<object, string>(key)));
                 }
                 Items = Enchantments.MaxByItems().Items;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.As<object, string>());
             }
             finally
             {
@@ -265,7 +265,7 @@ namespace EnchantsOrder.JSIL
 
                 return builder.ToString();
             }
-            return $"No enchantments found for {text}.";
+            return string.Format(Resource.NoEnchantments, text);
         }
 
         [JSReplacement("console.log($message)")]

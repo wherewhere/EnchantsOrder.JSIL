@@ -123,6 +123,10 @@
   <data name="MaxExperienceLevel" xml:space="preserve">
     <value>Max Experience Level</value>
   </data>
+  <data name="NoEnchantments" xml:space="preserve">
+    <value>No enchantments found for "{0}" :(</value>
+    <comment>{0} - text</comment>
+  </data>
   <data name="PenaltyLevel" xml:space="preserve">
     <value>Penalty Level</value>
   </data>

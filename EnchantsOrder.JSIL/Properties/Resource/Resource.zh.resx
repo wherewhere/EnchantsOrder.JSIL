@@ -123,6 +123,9 @@
   <data name="MaxExperienceLevel" xml:space="preserve">
     <value>最高所需等级</value>
   </data>
+  <data name="NoEnchantments" xml:space="preserve">
+    <value>找不到“{0}”的附魔 :(</value>
+  </data>
   <data name="PenaltyLevel" xml:space="preserve">
     <value>惩罚等级</value>
   </data>

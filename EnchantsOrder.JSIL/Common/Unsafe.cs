@@ -7,15 +7,15 @@ namespace EnchantsOrder.JSIL.Common
     {
         [DoesNotReturn]
         [JSReplacement("throw $error")]
-        public static extern void Throw(object error);
-
-        [JSReplacement("new $constructor()")]
-        public static extern T New<T>(object constructor);
+        public static extern void Throw<T>(T error);
 
         [JSReplacement("$obj[$key]")]
-        public static extern T GetItem<T>(this object obj, string key);
+        public static extern TResult GetItem<TSelf, TResult>(this TSelf obj, string key);
 
         [JSReplacement("Object.keys($obj)")]
-        public static extern string[] Keys(this object obj);
+        public static extern string[] Keys<T>(this T obj);
+
+        [JSReplacement("$obj")]
+        public static extern TTo As<TFrom, TTo>(this TFrom obj);
     }
 }

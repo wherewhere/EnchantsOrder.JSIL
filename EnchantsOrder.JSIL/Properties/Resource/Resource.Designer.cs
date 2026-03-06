@@ -79,6 +79,15 @@ namespace EnchantsOrder.JSIL.Properties {
         }
         
         /// <summary>
+        ///   查找类似 No enchantments found for &quot;{0}&quot; :( 的本地化字符串。
+        /// </summary>
+        internal static string NoEnchantments {
+            get {
+                return ResourceManager.GetString("NoEnchantments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Penalty Level 的本地化字符串。
         /// </summary>
         internal static string PenaltyLevel {

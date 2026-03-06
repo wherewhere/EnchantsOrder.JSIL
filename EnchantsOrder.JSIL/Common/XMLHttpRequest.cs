@@ -1,5 +1,4 @@
-﻿using JSIL;
-using JSIL.Meta;
+﻿using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Common
 {
@@ -9,20 +8,16 @@ namespace EnchantsOrder.JSIL.Common
     /// </summary>
     public sealed class XMLHttpRequest
     {
-        [JSImmutable]
-        private readonly object request = Unsafe.New<object>(Builtins.Global["XMLHttpRequest"]);
+        [JSReplacement("new XMLHttpRequest()")]
+        public extern XMLHttpRequest();
 
         /// <summary>
         /// The read-only <see cref="XMLHttpRequest"/> property <see cref="ResponseText"/> returns the text received from a server following a request being sent.
         /// </summary>
-        public string ResponseText
+        public extern string ResponseText
         {
-            get
-            {
-                return responseText(request);
-                [JSReplacement("$request.responseText")]
-                static extern string responseText(object request);
-            }
+            [JSReplacement("$this.responseText")]
+            get;
         }
 
         /// <summary>
@@ -33,23 +28,15 @@ namespace EnchantsOrder.JSIL.Common
         /// <param name="async">An optional Boolean parameter, defaulting to <see langword="true"/>, indicating whether or not to perform the operation asynchronously.
         /// If this value is <see langword="false"/>, the <see cref="Send"/> method does not return until the response is received. If <see langword="true"/>, notification of a completed transaction is provided using event listeners.
         /// This must be <see langword="true"/> if the <c>multipart</c> attribute is <see langword="true"/>, or an exception will be thrown.</param>
-        public void Open(string method, string url, bool async = true)
-        {
-            open(request, method, url, async);
-            [JSReplacement("$request.open($method, $url, $async)")]
-            static extern void open(object request, string method, string url, bool async = true);
-        }
+        [JSReplacement("$this.open($method, $url, $async)")]
+        public extern void Open(string method, string url, bool async = true);
 
         /// <summary>
-        /// The XMLHttpRequest method <see cref="Send"/> sends the request to the server.
+        /// The <see cref="XMLHttpRequest"/> method <see cref="Send"/> sends the request to the server.
         /// </summary>
         /// <param name="body">A body of data to be sent in the XHR request.</param>
-        public void Send(object? body = null)
-        {
-            send(request, body);
-            [JSReplacement("$request.send($body)")]
-            static extern void send(object request, object? body = null);
-        }
+        [JSReplacement("$this.send()")]
+        public extern void Send();
 
         /// <summary>
         /// The <see cref="AddEventListener"/> method of the EventTarget interface sets up a function that will be called whenever the specified event is delivered to the target.
@@ -57,12 +44,8 @@ namespace EnchantsOrder.JSIL.Common
         /// <param name="type">A case-sensitive string representing the event type to listen for.</param>
         /// <param name="listener">The object that receives a notification (an object that implements the Event interface) when an event of the specified type occurs.
         /// This must be <see langword="null"/>, an <see langword="object"/> with a handleEvent() method, or a JavaScript function. See The event listener callback for details on the callback itself.</param>
-        public void AddEventListener(string type, Action listener)
-        {
-            addEventListener(request, type, listener);
-            [JSReplacement("$request.addEventListener($type, $listener)")]
-            static extern void addEventListener(object request, string type, Action listener);
-        }
+        [JSReplacement("$this.addEventListener($type, $listener)")]
+        public extern void AddEventListener(string type, Action listener);
 
         public static Task<string> FetchAsync(string url)
         {
@@ -73,7 +56,7 @@ namespace EnchantsOrder.JSIL.Common
                     .Then(x => x.Text())
                     .Then(
                         new Action<string>(value => _ = tcs.TrySetResult(value)),
-                        new Action<object>(reason => _ = tcs.TrySetException(new Exception(reason.ToString()))));
+                        new Action<object>(reason => _ = tcs.TrySetException(reason.As<object, Exception>())));
             }
             else
             {

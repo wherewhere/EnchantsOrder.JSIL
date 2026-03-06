@@ -84,6 +84,9 @@ namespace EnchantsOrder.JSIL.Common
         }
     }
 
+    /// <summary>
+    /// Provides access to a data source and enables you to bind, change, add, remove, and move items in that data source.
+    /// </summary>
     public interface IListDataSource<T>;
 
     public interface IWinJSElement : IHTMLElementBase
@@ -153,6 +156,9 @@ namespace EnchantsOrder.JSIL.Common
         void AppendQuerySuggestions(params string[] suggestions);
     }
 
+    /// <summary>
+    /// Displays data items in a customizable list or grid.
+    /// </summary>
     public interface IListView<T> : IWinJSElement
     {
         /// <summary>
