@@ -66,7 +66,7 @@ namespace EnchantsOrder.JSIL.Models
         public long Experience => (long)Level * Weight;
 
         /// <inheritdoc/>
-        public override string ToString() => $"{Name} {Level.GetRomanNumber()}";
+        public override string ToString() => Name + Level.GetRomanNumber();
 
         /// <inheritdoc/>
         public int CompareTo(IEnchantment? other)

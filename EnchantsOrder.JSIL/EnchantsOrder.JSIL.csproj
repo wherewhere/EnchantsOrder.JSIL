@@ -24,10 +24,9 @@
 
   <ItemGroup>
     <PackageReference Include="EnchantsOrder" Version="0.2.7" />
-    <PackageReference Include="JSIL.Compiler" Version="0.8.2.10" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="JSIL.Libraries" Version="0.8.2.10" GeneratePathProperty="true" />
-    <PackageReference Include="JSIL.Meta" Version="0.8.2.10" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="JSIL.Compiler" Version="0.8.2.13" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Libraries" Version="0.8.2.13" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Meta" Version="0.8.2.13" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Version="1.15.0">
       <PrivateAssets>all</PrivateAssets>
@@ -60,6 +59,11 @@
     </ReferenceCopyLocalPaths>
   </ItemGroup>
 
+  <ItemGroup>
+    <ReferenceIgnore Include="System" />
+    <JSILConfig Include="**/*.jsilconfig" />
+  </ItemGroup>
+
   <Target Name="JsilTranslation" AfterTargets="AfterBuild">
     <PropertyGroup>
       <RunJSILCompilation Condition="$(RunJSILCompilation) == ''">true</RunJSILCompilation>
@@ -67,8 +71,9 @@
       <_JSILOutputPath Condition="$(JSILOutputPath) != ''">-out=$(JSILOutputPath) </_JSILOutputPath>
       <_PlatformArgument Condition="$(Platform) != ''">-platform=$(Platform) </_PlatformArgument>
       <_ConfigurationArgument Condition="$(Configuration) != ''">-configuration=$(Configuration) </_ConfigurationArgument>
+      <_IgnoreArgument>-ignore=@(ReferenceIgnore) </_IgnoreArgument>
     </PropertyGroup>
-    <Exec Command="$(_JsilcDir) $(TargetPath) $(_JSILOutputPath)$(_PlatformArgument)$(_ConfigurationArgument)" WorkingDirectory="$(TargetDir)" Condition="$(RunJSILCompilation)" />
+    <Exec Command="$(_JsilcDir) $(TargetPath) $(_JSILOutputPath)$(_PlatformArgument)$(_ConfigurationArgument)$(_IgnoreArgument)@(JSILConfig->'%(FullPath)')" WorkingDirectory="$(TargetDir)" Condition="$(RunJSILCompilation)" />
   </Target>
 
 </Project>

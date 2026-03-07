@@ -2,9 +2,7 @@
 using EnchantsOrder.JSIL.Models;
 using EnchantsOrder.JSIL.Properties;
 using EnchantsOrder.Models;
-using JSIL;
 using JSIL.Meta;
-using System.Collections;
 using System.Globalization;
 using System.Text;
 using Enchantment = EnchantsOrder.JSIL.Models.Enchantment;
@@ -13,6 +11,9 @@ namespace EnchantsOrder.JSIL
 {
     public static class Program
     {
+        private static bool hashChanged = false;
+        [JSImmutable]
+        private static readonly BindingList<global::EnchantsOrder.Models.Enchantment> wantedList = new([]);
         private static object[] Items = [];
         [JSImmutable]
         private static readonly List<Enchantment> Enchantments = [];
@@ -39,10 +40,6 @@ namespace EnchantsOrder.JSIL
             JQuery name = JQuery.Invoke("#enchants-enchantment-name-selector");
             IAutoSuggestBox selector = name[0].WinControl.As<IAutoSuggestBox>();
 
-            JQuery penalty = JQuery.Invoke("#enchants-object-penalty-input");
-            JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
-            JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
-
             selector.AddEventListener<ICustomEvent<ISearchBoxSuggestionsRequestedEventArgs>>(
                 "suggestionsrequested",
                 eventInfo =>
@@ -53,6 +50,10 @@ namespace EnchantsOrder.JSIL
                         [.. (string.IsNullOrWhiteSpace(queryText) ? Enchantments
                             : Enchantments.Where(x => x.Name.Contains(queryText))).Select(x => x.Name)]);
                 });
+
+            JQuery penalty = JQuery.Invoke("#enchants-object-penalty-input");
+            JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
+            JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
 
             selector.AddEventListener<ICustomEvent<ISearchBoxEventArgs>>(
                 "querysubmitted",
@@ -68,27 +69,36 @@ namespace EnchantsOrder.JSIL
                     }
                 });
 
-            BindingList<global::EnchantsOrder.Models.Enchantment> enchantments = new([]);
-            IListView<global::EnchantsOrder.Models.Enchantment> listView =
-                JQuery.Invoke("#enchants-wanted-list")[0].WinControl.As<IListView<global::EnchantsOrder.Models.Enchantment>>();
-            listView.ItemDataSource = enchantments.dataSource;
+            LoadSettings();
+            [JSReplacement("addEventListener($type, $listener)")]
+            static extern void addEventListener(string type, Action listener);
+            addEventListener("hashchange", LoadSettings);
 
-            JQuery wantedGroup = JQuery.Invoke("#enchants-wanted-group").RemoveAttr("style").Hide();
-            JQuery resultsGroup = JQuery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
+            JQuery wantedGroup = JQuery.Invoke("#enchants-wanted-group").RemoveAttr("style");
+            if (wantedList.Length == 0)
+            {
+                _ = wantedGroup.Hide();
+            }
 
             JQuery.Invoke("#enchants-enchantment-add").Click(_ =>
             {
                 string name = selector.QueryText;
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    int levelValue = int.Parse(level.Val<string>());
-                    int weightValue = int.Parse(weight.Val<string>());
-                    global::EnchantsOrder.Models.Enchantment enchantment = new(name, levelValue, weightValue);
-                    enchantments.Push(enchantment);
+                    _ = wantedList.Push(
+                        new global::EnchantsOrder.Models.Enchantment(
+                            name,
+                            int.Parse(level.Val<string>()),
+                            int.Parse(weight.Val<string>())));
                     _ = wantedGroup.Show();
                 }
             });
 
+            IListView<global::EnchantsOrder.Models.Enchantment> listView =
+                JQuery.Invoke("#enchants-wanted-list")[0].WinControl.As<IListView<global::EnchantsOrder.Models.Enchantment>>();
+            listView.ItemDataSource = wantedList.dataSource;
+
+            JQuery resultsGroup = JQuery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
             [JSReplacement("window.deleteEnchantment = $action")]
             static extern void SetDeleteEnchantment(Action<IHTMLElement> action);
             SetDeleteEnchantment(e =>
@@ -97,11 +107,11 @@ namespace EnchantsOrder.JSIL
                 {
                     JQuery template = JQuery.Invoke(e).Parents(".win-template");
                     int index = listView.IndexOfElement(template[0]);
-                    enchantments.Splice(index, 1);
+                    wantedList.Splice(index, 1);
                 }
                 finally
                 {
-                    if (enchantments.Length == 0)
+                    if (wantedList.Length == 0)
                     {
                         _ = wantedGroup.Hide();
                         _ = resultsGroup.Hide();
@@ -112,35 +122,33 @@ namespace EnchantsOrder.JSIL
             _ = JQuery.Invoke("#enchants-enchantment-start").Click(_ =>
             {
                 BindingListImplement.ListReader<global::EnchantsOrder.Models.Enchantment> reader =
-                    enchantments.GetEnumerable();
+                    wantedList.GetEnumerable();
                 if (reader.Count > 0)
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
                     OrderingResults results = reader.Ordering(penaltyValue);
                     string str = results.ToCultureString();
                     _ = results.IsTooExpensive
-                        ? JQuery.Invoke("#enchants-results-output").Text($"{str}\n{Resource.TooExpensive}")
+                        ? JQuery.Invoke("#enchants-results-output").Text(str + '\n' + Resource.TooExpensive)
                         : JQuery.Invoke("#enchants-results-output").Text(str);
                     _ = resultsGroup.Show();
+                    SetSettings(reader);
                 }
             });
         }
 
         private static void InitializeItems()
         {
-            JQuery item = JQuery.Invoke("#items-object-select-selector");
-            JQuery penalty = JQuery.Invoke("#items-object-penalty-input");
-
-            _ = item.Html(
+            JQuery item = JQuery.Invoke("#items-object-select-selector").Html(
                 $"""
                 <option style='display: none' value disabled selected>{Resource.ChooseItem}</option>
-                {string.Join("\n", Items.Select(x => $"<option>{x}</option>"))}
+                {string.Join("\n", Items.Select(x => "<option>" + x + "</option>"))}
                 """);
+            JQuery penalty = JQuery.Invoke("#items-object-penalty-input");
 
             JQuery resultsGroup = JQuery.Invoke("#items-results-group").RemoveAttr("style").Hide();
-
-            item.Change(OnChange);
-            penalty.Change(OnChange);
+            _ = item.Change(OnChange);
+            _ = penalty.Change(OnChange);
 
             void OnChange(object _)
             {
@@ -149,7 +157,7 @@ namespace EnchantsOrder.JSIL
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
                     _ = JQuery.Invoke("#items-results-output").Text(GetItemList(itemName, penaltyValue));
-                    resultsGroup.Show();
+                    _ = resultsGroup.Show();
                 }
             }
         }
@@ -161,7 +169,7 @@ namespace EnchantsOrder.JSIL
             {
                 [JSReplacement("getCurrentLanguage()")]
                 static extern string getCurrentLanguage();
-                object json = await XMLHttpRequest.FetchJsonAsync($"https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.{getCurrentLanguage()}.json");
+                object json = await XMLHttpRequest.FetchJsonAsync("https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants."+ getCurrentLanguage() + ".json");
                 string[] keys = json.Keys();
                 foreach (string key in keys)
                 {
@@ -177,6 +185,67 @@ namespace EnchantsOrder.JSIL
             {
                 _ = progress.Hide();
             }
+        }
+
+        private static void LoadSettings() {
+            if (hashChanged) {
+                hashChanged = false;
+                return;
+            }
+            string hash = locationHash()[1..];
+            [JSReplacement("location.hash")]
+            static extern string locationHash();
+            if (!string.IsNullOrWhiteSpace(hash)) {
+                URLSearchParams @params = new(hash);
+                if (@params.Has("wanted")) {
+                    string? value = @params.Get("wanted");
+                    if (!string.IsNullOrWhiteSpace(value)) {
+                        string? wanted = decompressFromEncodedURIComponent(value!);
+                        [JSReplacement("LZString.decompressFromEncodedURIComponent($compressed)")]
+                        static extern string? decompressFromEncodedURIComponent(string compressed);
+                        if (!string.IsNullOrWhiteSpace(wanted)) {
+                            object list = parse(wanted!);
+                            if (list is object[] array)
+                            {
+                                _ = wantedList.Splice(0, wantedList.Length);
+                                foreach (object item in array)
+                                {
+                                    _ = wantedList.Push(
+                                        new global::EnchantsOrder.Models.Enchantment(
+                                            item.GetItem<object, string>("name"),
+                                            item.GetItem<object, int>("level"),
+                                            item.GetItem<object, int>("weight")));
+                                }
+                            }
+                            [JSReplacement("JSON.parse($wanted)")]
+                            static extern object parse(string wanted);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void SetSettings(BindingListImplement.ListReader<global::EnchantsOrder.Models.Enchantment> wantedList)
+        {
+            JSObject settings = new();
+            if (wantedList.Count > 0)
+            {
+                settings["wanted"] = compressToEncodedURIComponent(
+                    stringify([
+                        .. wantedList.Select(x => new JSObject() {
+                            ["name"] = x.Name.As<string, JSObject>(),
+                            ["level"] = x.Level.As<int, JSObject>(),
+                            ["weight"] = x.Weight.As<int, JSObject>()
+                        })])).As<string, JSObject>();
+                [JSReplacement("JSON.stringify($array)")]
+                static extern string stringify(object[] array);
+                [JSReplacement("LZString.compressToEncodedURIComponent($input)")]
+                static extern string compressToEncodedURIComponent(string input);
+            }
+            locationHash(new URLSearchParams(settings).ToString());
+            [JSReplacement("location.hash = $hash")]
+            static extern void locationHash(string hash);
+            hashChanged = true;
         }
 
         private static string GetItemList(string text, int initialPenalty)
@@ -277,7 +346,7 @@ namespace EnchantsOrder.JSIL
         }
 
         [JSReplacement("console.log($message)")]
-        internal static extern void Log(object message);
+        internal static extern void Log<T>(T message);
     }
 
     file static class Extensions

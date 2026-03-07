@@ -11,6 +11,16 @@
           href="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png" />
 
     <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                color-scheme: light;
+            }
+        }
+
         #loadingProgress {
             background: #000;
             position: absolute;
@@ -79,6 +89,8 @@
     </script>
     <script src="./Libraries/JSIL.js" type="text/javascript"></script>
     <script src="./lib/jquery/dist/jquery.slim.min.js" type="text/javascript"></script>
+    <script src="./lib/lz-string/libs/lz-string.min.js" type="text/javascript"></script>
+    <script src="./lib/url-search-params-polyfill/index.min.js" type="text/javascript"></script>
     <script src="./js/index.js" type="text/javascript" async></script>
 </head>
 
@@ -171,14 +183,16 @@
                             <div class="wanted-list-root">
                                 <div>
                                     <span data-win-bind="innerText: Name"></span><br />
-                                    <span data-win-res="{ textContent: 'level' }">Level</span>:
-                                    <span data-win-bind="innerText: Level"></span>
-                                    |
-                                    <span data-win-res="{ textContent: 'weight' }">Weight</span>:
-                                    <span data-win-bind="innerText: Weight"></span>
-                                    |
-                                    <span data-win-res="{ textContent: 'experience' }">Experience</span>:
-                                    <span data-win-bind="innerText: Experience"></span>
+                                    <span class="win-type-caption">
+                                        <span data-win-res="{ textContent: 'level' }">Level</span>:
+                                        <span data-win-bind="innerText: Level"></span>
+                                        |
+                                        <span data-win-res="{ textContent: 'weight' }">Weight</span>:
+                                        <span data-win-bind="innerText: Weight"></span>
+                                        |
+                                        <span data-win-res="{ textContent: 'experience' }">Experience</span>:
+                                        <span data-win-bind="innerText: Experience"></span>
+                                    </span>
                                 </div>
                                 <button title="Delete" class="win-button" type="button"
                                         onclick="deleteEnchantment(this)"

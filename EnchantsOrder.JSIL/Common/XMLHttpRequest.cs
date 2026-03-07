@@ -73,8 +73,8 @@ namespace EnchantsOrder.JSIL.Common
                         _ = tcs.TrySetException(ex);
                     }
                 });
-                request.AddEventListener("error", () => _ = tcs.TrySetException(new Exception($"Failed to fetch {url}")));
-                request.AddEventListener("timeout", () => _ = tcs.TrySetException(new TimeoutException($"Timeout while fetching {url}")));
+                request.AddEventListener("error", () => _ = tcs.TrySetException(new Exception("Failed to fetch " + url)));
+                request.AddEventListener("timeout", () => _ = tcs.TrySetException(new TimeoutException("Timeout while fetching " + url)));
                 request.AddEventListener("abort", () => _ = tcs.TrySetCanceled());
                 request.Send();
             }

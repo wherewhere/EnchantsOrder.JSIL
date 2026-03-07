@@ -18,7 +18,7 @@ namespace EnchantsOrder.JSIL.Models
         public long Experience => enchantments[0].Experience;
 
         /// <inheritdoc/>
-        public override string ToString() => $"{Name} {Level.GetRomanNumber()}";
+        public override string ToString() => Name + Level.GetRomanNumber();
 
         /// <inheritdoc/>
         public int CompareTo(IEnchantment? other)

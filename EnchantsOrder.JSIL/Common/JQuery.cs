@@ -60,16 +60,14 @@ namespace EnchantsOrder.JSIL.Common
         /// <summary>
         /// Hide the matched elements.
         /// </summary>
-        /// <param name="options">A map of additional options to pass to the method.</param>
-        [JSReplacement("$this.hide($options)")]
-        public extern JQuery Hide(object? options = null);
+        [JSReplacement("$this.hide()")]
+        public extern JQuery Hide();
 
         /// <summary>
         /// Display the matched elements.
         /// </summary>
-        /// <param name="options">A map of additional options to pass to the method.</param>
-        [JSReplacement("$this.show($options)")]
-        public extern JQuery Show(object? options = null);
+        [JSReplacement("$this.show()")]
+        public extern JQuery Show();
 
         /// <summary>
         /// Bind an event handler to the "change" JavaScript event

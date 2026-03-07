@@ -11,6 +11,20 @@
       "destination": "wwwroot/lib/jquery/"
     },
     {
+      "library": "lz-string@latest",
+      "files": [
+        "libs/lz-string.min.js"
+      ],
+      "destination": "wwwroot/lib/lz-string/"
+    },
+    {
+      "library": "url-search-params-polyfill@latest",
+      "files": [
+        "index.min.js"
+      ],
+      "destination": "wwwroot/lib/url-search-params-polyfill/"
+    },
+    {
       "library": "winjs@latest",
       "files": [
         "css/ui-dark.min.css",

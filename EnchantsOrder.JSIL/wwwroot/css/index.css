@@ -1,11 +1,11 @@
 ﻿body {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
-    width: 100%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    width: 100%;
 }
 
 .win-ui-light {
@@ -17,26 +17,26 @@
 }
 
 .root {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
-    padding: 16px;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 16px;
 }
 
 #progress-bar.win-progress-bar {
-    width: 100%;
-    z-index: 4;
-    position: absolute;
-    top: 0;
     -webkit-appearance: auto;
     appearance: auto;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
 }
 
 h3.win-type-title {
-    margin-top: 24px;
     margin-bottom: 6px;
+    margin-top: 24px;
 }
 
 #enchants-results-group h3.win-type-title {
@@ -44,13 +44,13 @@ h3.win-type-title {
 }
 
 h5.win-type-base {
-    margin-top: 12px;
     margin-bottom: 8px;
+    margin-top: 12px;
 }
 
 .win-pivot .win-pivot-header,
 .win-pivot .win-pivot-header.win-pivot-header:hover:active {
-    font-family: "Segoe UI", sans-serif, "Segoe MDL2 Assets", Symbols, "Segoe UI Emoji";
+    font-family: Segoe UI, sans-serif, Segoe MDL2 Assets, Symbols, Segoe UI Emoji
 }
 
 .win-pivot-item .win-pivot-item-content {
@@ -58,29 +58,29 @@ h5.win-type-base {
     padding: 0 19px;
 }
 
+.win-autosuggestbox,
 .win-button,
-.win-textbox,
 .win-dropdown,
-.win-autosuggestbox {
+.win-textbox {
     min-width: auto;
 }
 
-.win-textbox,
+.win-autosuggestbox,
 .win-dropdown,
-.win-autosuggestbox {
-    width: 100%;
+.win-textbox {
     margin: 0;
+    width: 100%;
 }
 
 .win-dropdown {
     max-width: none;
 }
 
-.win-pivot,
 .win-listview,
-.win-listview > .win-viewport,
 .win-listview .win-viewport .win-container,
-.win-listview .win-viewport .win-container .win-itembox {
+.win-listview .win-viewport .win-container .win-itembox,
+.win-listview > .win-viewport,
+.win-pivot {
     height: auto;
 }
 
@@ -97,8 +97,8 @@ h5.win-type-base {
 }
 
 .pivot-container {
-    flex: 1;
     display: flex;
+    flex: 1;
     margin: 0 -23px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -109,16 +109,16 @@ h5.win-type-base {
 }
 
 .wanted-list-root {
-    display: flex;
     align-items: center;
+    display: flex;
     justify-content: space-between;
-    padding: 8px;
+    padding: 6px 8px 6px 10px;
 }
 
     .wanted-list-root .win-button {
         height: 32px;
-        width: 32px;
         padding: 2px 0 0 1px;
+        width: 32px;
     }
 
         .wanted-list-root .win-button:not(:hover):not(:active) {
@@ -126,6 +126,6 @@ h5.win-type-base {
         }
 
 .results-output {
-    margin: 12px 1px 0 1px;
+    margin: 12px 1px 0;
     overflow-x: auto;
 }
