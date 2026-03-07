@@ -29,7 +29,7 @@ jobs:
 
       - name: Build
         run: dotnet build -c:Release -p:RunJSILCompilation=false `
-          && msbuild /p:Configuration=Release /p:OutputPath=../public
+          && msbuild /p:Configuration=Release /p:OutputPath=../public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
