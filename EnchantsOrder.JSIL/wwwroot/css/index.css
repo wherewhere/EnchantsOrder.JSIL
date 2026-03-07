@@ -40,7 +40,7 @@ h3.win-type-title {
 }
 
 #enchants-results-group h3.win-type-title {
-    margin-top: 0;
+    margin-top: 5px;
 }
 
 h5.win-type-base {
@@ -83,6 +83,18 @@ h5.win-type-base {
 .win-pivot {
     height: auto;
 }
+
+    .win-listview .win-itemscontainer {
+        height: auto !important;
+    }
+
+    .win-listview .win-listlayout .win-itemsblock {
+        margin: 0;
+    }
+
+        .win-listview .win-listlayout .win-itemsblock:nth-child(n+3) {
+            margin-top: -14px;
+        }
 
     .win-listview > .win-vertical .win-container {
         margin: 10px 7px;
