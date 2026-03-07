@@ -17,12 +17,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
+
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Install Dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c:Release -p:RunJSILCompilation=false && dotnet build -c:Release -o:public
+        run: dotnet build -c:Release -p:RunJSILCompilation=false `
+          && msbuild /p:Configuration=Release /p:OutputPath=../public
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

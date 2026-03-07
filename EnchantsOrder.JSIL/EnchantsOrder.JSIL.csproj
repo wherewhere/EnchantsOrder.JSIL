@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <JSILOutputPath>wwwroot</JSILOutputPath>
@@ -22,7 +21,22 @@
     </PolySharpIncludeGeneratedTypes>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <RunJSILCompilation Condition="$(RunJSILCompilation) == ''">true</RunJSILCompilation>
+    <IgnoreErrorList>JS1300</IgnoreErrorList>
+    <JsSourceExtensionPattern>\.js</JsSourceExtensionPattern>
+    <JsTargetExtension>.js</JsTargetExtension>
+    <CssSourceExtensionPattern>\.js</CssSourceExtensionPattern>
+    <CssTargetExtension>.js</CssTargetExtension>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(RunAjaxMinCompilation) == ''">
+    <RunAjaxMinCompilation>false</RunAjaxMinCompilation>
+    <RunAjaxMinCompilation Condition="$(Configuration) == 'Release'">$(RunJSILCompilation)</RunAjaxMinCompilation>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="AjaxMin" Version="5.14.5506.26202" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="EnchantsOrder" Version="0.2.7" />
     <PackageReference Include="JSIL.Compiler" Version="0.8.2.13" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="JSIL.Libraries" Version="0.8.2.13" GeneratePathProperty="true" />
@@ -64,16 +78,31 @@
     <JSILConfig Include="**/*.jsilconfig" />
   </ItemGroup>
 
-  <Target Name="JsilTranslation" AfterTargets="AfterBuild">
+  <Target Name="JsilTranslation" AfterTargets="AfterBuild" Condition="$(RunJSILCompilation)">
     <PropertyGroup>
-      <RunJSILCompilation Condition="$(RunJSILCompilation) == ''">true</RunJSILCompilation>
       <_JsilcDir>$(PkgJSIL_Compiler)\tools\jsilc</_JsilcDir>
       <_JSILOutputPath Condition="$(JSILOutputPath) != ''">-out=$(JSILOutputPath) </_JSILOutputPath>
       <_PlatformArgument Condition="$(Platform) != ''">-platform=$(Platform) </_PlatformArgument>
       <_ConfigurationArgument Condition="$(Configuration) != ''">-configuration=$(Configuration) </_ConfigurationArgument>
       <_IgnoreArgument>-ignore=@(ReferenceIgnore) </_IgnoreArgument>
     </PropertyGroup>
-    <Exec Command="$(_JsilcDir) $(TargetPath) $(_JSILOutputPath)$(_PlatformArgument)$(_ConfigurationArgument)$(_IgnoreArgument)@(JSILConfig->'%(FullPath)')" WorkingDirectory="$(TargetDir)" Condition="$(RunJSILCompilation)" />
+    <Exec Command="$(_JsilcDir) $(TargetPath) $(_JSILOutputPath)$(_PlatformArgument)$(_ConfigurationArgument)$(_IgnoreArgument)@(JSILConfig->'%(FullPath)')" WorkingDirectory="$(TargetDir)" />
   </Target>
 
+  <Target Name="BuildAjaxMin" AfterTargets="JsilTranslation" Condition="$(RunAjaxMinCompilation)">
+    <ItemGroup>
+      <JsSourceFiles Include="$(OutputPath)$(JSILOutputPath)/**/*.js" Exclude="**/*.min.js" />
+      <CssSourceFiles Include="$(OutputPath)$(JSILOutputPath)/**/*.css" Exclude="**/*.min.css" />
+    </ItemGroup>
+    <Message Text="Processing AjaxMin" Importance="high" />
+    <AjaxMin IgnoreErrorList="$(IgnoreErrorList)"
+             JsSourceFiles="@(JsSourceFiles)"
+             JsSourceExtensionPattern="$(JsSourceExtensionPattern)"
+             JsTargetExtension="$(JsTargetExtension)"
+             CssSourceFiles="@(CssSourceFiles)"
+             CssSourceExtensionPattern="$(CssSourceExtensionPattern)"
+             CssTargetExtension="$(CssTargetExtension)" />
+  </Target>
+
+  <UsingTask AssemblyFile="$(PkgAjaxMin)/tools/net40/AjaxMinTask.dll" TaskName="AjaxMin" Runtime="CLR4" />
 </Project>
