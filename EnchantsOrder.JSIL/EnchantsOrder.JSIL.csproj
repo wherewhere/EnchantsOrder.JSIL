@@ -2,10 +2,10 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <JSILOutputPath>wwwroot</JSILOutputPath>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net4.8.1</TargetFramework>
+    <VersionPrefix>0.0.1</VersionPrefix>
   </PropertyGroup>
 
   <PropertyGroup>

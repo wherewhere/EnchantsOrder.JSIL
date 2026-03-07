@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Authors>wherewhere</Authors>
+    <Copyright>Copyright © 2017 - 2026 wherewhere. All Rights Reserved.</Copyright>
+    <Description>Get the best order for enchanting.</Description>
+    <LangVersion>latest</LangVersion>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/wherewhere/EnchantsOrder.JSIL</RepositoryUrl>
+  </PropertyGroup>
+</Project>
