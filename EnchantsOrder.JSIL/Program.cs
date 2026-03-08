@@ -129,7 +129,7 @@ namespace EnchantsOrder.JSIL
                     OrderingResults results = reader.Ordering(penaltyValue);
                     string str = results.ToCultureString();
                     _ = results.IsTooExpensive
-                        ? JQuery.Invoke("#enchants-results-output").Text(str + '\n' + Resource.TooExpensive)
+                        ? JQuery.Invoke("#enchants-results-output").Html(str + "\n<span class='accent-text'>" + Resource.TooExpensive + "</span>")
                         : JQuery.Invoke("#enchants-results-output").Text(str);
                     _ = resultsGroup.Show();
                     SetSettings(reader);
@@ -156,7 +156,7 @@ namespace EnchantsOrder.JSIL
                 if (!string.IsNullOrWhiteSpace(itemName))
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
-                    _ = JQuery.Invoke("#items-results-output").Text(GetItemList(itemName, penaltyValue));
+                    _ = JQuery.Invoke("#items-results-output").Html(GetItemList(itemName, penaltyValue));
                     _ = resultsGroup.Show();
                 }
             }
@@ -169,7 +169,7 @@ namespace EnchantsOrder.JSIL
             {
                 [JSReplacement("getCurrentLanguage()")]
                 static extern string getCurrentLanguage();
-                object json = await XMLHttpRequest.FetchJsonAsync("https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants."+ getCurrentLanguage() + ".json");
+                object json = await XMLHttpRequest.FetchJsonAsync("https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants." + getCurrentLanguage() + ".json");
                 string[] keys = json.Keys();
                 foreach (string key in keys)
                 {
@@ -187,23 +187,29 @@ namespace EnchantsOrder.JSIL
             }
         }
 
-        private static void LoadSettings() {
-            if (hashChanged) {
+        private static void LoadSettings()
+        {
+            if (hashChanged)
+            {
                 hashChanged = false;
                 return;
             }
             string hash = locationHash()[1..];
             [JSReplacement("location.hash")]
             static extern string locationHash();
-            if (!string.IsNullOrWhiteSpace(hash)) {
+            if (!string.IsNullOrWhiteSpace(hash))
+            {
                 URLSearchParams @params = new(hash);
-                if (@params.Has("wanted")) {
+                if (@params.Has("wanted"))
+                {
                     string? value = @params.Get("wanted");
-                    if (!string.IsNullOrWhiteSpace(value)) {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
                         string? wanted = decompressFromEncodedURIComponent(value!);
                         [JSReplacement("LZString.decompressFromEncodedURIComponent($compressed)")]
                         static extern string? decompressFromEncodedURIComponent(string compressed);
-                        if (!string.IsNullOrWhiteSpace(wanted)) {
+                        if (!string.IsNullOrWhiteSpace(wanted))
+                        {
                             object list = parse(wanted!);
                             if (list is object[] array)
                             {
@@ -321,7 +327,9 @@ namespace EnchantsOrder.JSIL
                     return result;
                 }
 
-                _ = builder.AppendLine(text);
+                _ = builder.Append("<code class='win-code win-type-base'>")
+                           .Append(text)
+                           .AppendLine("</code>");
                 foreach (List<IEnchantment> list in GetAllEnchantmentPaths(group))
                 {
                     try
@@ -331,7 +339,9 @@ namespace EnchantsOrder.JSIL
                         _ = builder.AppendLine(results.ToCultureString());
                         if (results.IsTooExpensive)
                         {
-                            _ = builder.AppendLine(Resource.TooExpensive);
+                            _ = builder.Append("<span class='accent-text'>")
+                                       .Append(Resource.TooExpensive)
+                                       .AppendLine("</span>");
                         }
                     }
                     catch (Exception ex)

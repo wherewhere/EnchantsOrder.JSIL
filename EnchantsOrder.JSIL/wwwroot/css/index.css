@@ -108,6 +108,11 @@ h5.win-type-base {
     font-family: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, Menlo, Monaco, "Courier New", monospace;
 }
 
+    .win-code.win-type-base {
+        font-weight: 500;
+        line-height: 1.333;
+    }
+
 .pivot-container {
     display: flex;
     flex: 1;
@@ -140,4 +145,8 @@ h5.win-type-base {
 .results-output {
     margin: 12px 1px 0;
     overflow-x: auto;
+}
+
+.accent-text {
+    color: #fff;
 }

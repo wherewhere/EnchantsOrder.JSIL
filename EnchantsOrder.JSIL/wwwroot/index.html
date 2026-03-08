@@ -73,7 +73,7 @@
     <script src="./js/i18n.js" type="text/javascript"></script>
     <script>
         WinJS.UI._Accents.createAccentRule(
-            "#loadingProgress #progressBar",
+            ".accent-text, #loadingProgress #progressBar",
             [{ name: "background", value: WinJS.UI._Accents.ColorTypes.accent }]
         );
     </script>
@@ -242,7 +242,7 @@
                         <h3 id="items-results" class="win-type-title" data-win-res="{ textContent: 'results' }">
                             Results
                         </h3>
-                        <pre class="results-output"><code class="win-code" id="items-results-output"></code></pre>
+                        <pre class="results-output"><code id="items-results-output" class="win-code"></code></pre>
                     </span>
                 </div>
             </div>
