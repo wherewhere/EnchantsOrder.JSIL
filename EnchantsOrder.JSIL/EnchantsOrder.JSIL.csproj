@@ -75,7 +75,7 @@
 
   <ItemGroup>
     <ReferenceIgnore Include="System" />
-    <JSILConfig Include="**/*.jsilconfig" />
+    <JSILConfig Include="**\*.jsilconfig" />
   </ItemGroup>
 
   <Target Name="JsilTranslation" AfterTargets="AfterBuild" Condition="$(RunJSILCompilation)">
@@ -91,8 +91,8 @@
 
   <Target Name="BuildAjaxMin" AfterTargets="JsilTranslation" Condition="$(RunAjaxMinCompilation)">
     <ItemGroup>
-      <JsSourceFiles Include="$(OutputPath)$(JSILOutputPath)/**/*.js" Exclude="**/*.min.js" />
-      <CssSourceFiles Include="$(OutputPath)$(JSILOutputPath)/**/*.css" Exclude="**/*.min.css" />
+      <JsSourceFiles Include="$(OutputPath)$(JSILOutputPath)\**\*.js" Exclude="$(OutputPath)$(JSILOutputPath)\lib\**\*.*;**\*.min.*" />
+      <CssSourceFiles Include="$(OutputPath)$(JSILOutputPath)\**\*.css" Exclude="$(OutputPath)$(JSILOutputPath)\lib\**\*.*;**\*.min.*" />
     </ItemGroup>
     <Message Text="Processing AjaxMin" Importance="high" />
     <AjaxMin IgnoreErrorList="$(IgnoreErrorList)"
