@@ -18,6 +18,14 @@
       "destination": "wwwroot/lib/lz-string/"
     },
     {
+      "library": "mdl2-icons@latest",
+      "files": [
+        "fonts/mdl2.woff",
+        "fonts/mdl2.woff2"
+      ],
+      "destination": "wwwroot/lib/mdl2-icons/"
+    },
+    {
       "library": "url-search-params-polyfill@latest",
       "files": [
         "index.min.js"

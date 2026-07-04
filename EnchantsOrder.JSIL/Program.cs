@@ -412,23 +412,15 @@ namespace EnchantsOrder.JSIL
 
         public static string ToCultureString(this OrderingResults results)
         {
-            CultureInfo culture = Resource.Culture ?? CultureInfo.CurrentUICulture ?? CultureInfo.CurrentCulture;
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase))
+            StringBuilder builder = new();
+            foreach (EnchantmentStep step in results.Steps)
             {
-                return results.ToString();
+                _ = builder.AppendLine(step.ToCultureString());
             }
-            else
-            {
-                StringBuilder builder = new();
-                foreach (EnchantmentStep step in results.Steps)
-                {
-                    _ = builder.AppendLine(step.ToCultureString());
-                }
-                return builder.Append(Resource.PenaltyLevel).Append(": ").AppendLine(results.Penalty.ToString())
-                              .Append(Resource.MaxExperienceLevel).Append(": ").AppendLine(results.MaxExperience.ToString())
-                              .Append(Resource.TotalExperienceLevel).Append(": ").Append(results.TotalExperience.ToString())
-                              .ToString();
-            }
+            return builder.Append(Resource.PenaltyLevel).Append(": ").AppendLine(results.Penalty.ToString())
+                          .Append(Resource.MaxExperienceLevel).Append(": ").AppendLine(results.MaxExperience.ToString())
+                          .Append(Resource.TotalExperienceLevel).Append(": ").Append(results.TotalExperience.ToString())
+                          .ToString();
         }
 
         public static string ToCultureString(this EnchantmentStep step)

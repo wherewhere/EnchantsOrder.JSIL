@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Build
         run: dotnet build -c:Release -p:RunJSILCompilation=false `
-          && msbuild /p:Configuration=Release /p:OutputPath=../public/
+          && msbuild /m /p:Configuration=Release /p:OutputPath=../public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

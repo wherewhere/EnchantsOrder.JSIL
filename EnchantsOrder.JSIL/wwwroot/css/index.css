@@ -1,4 +1,82 @@
-﻿.pivot-container,
+﻿@font-face {
+    font-family: Segoe MDL2 Assets;
+    src: local("Segoe MDL2 Assets"), url(../lib/mdl2-icons/fonts/mdl2.woff2) format("woff2"), url(../lib/mdl2-icons/fonts/mdl2.woff) format("woff");
+    font-weight: 400;
+    font-style: normal
+}
+
+@supports ((-webkit-appearance:base-select) or (appearance:base-select)) {
+    .win-dropdown {
+        align-items: center;
+        -webkit-appearance: base-select;
+        appearance: base-select;
+        justify-content: space-between;
+        padding: 5px 0 7px 12px;
+    }
+
+        .win-dropdown::picker-icon {
+            background-color: transparent;
+            border: none;
+            color: hsla(0, 0%, 100%, .8);
+            content: "\e011";
+            font-family: Segoe MDL2 Assets, Symbols;
+            font-size: 11px;
+            margin-bottom: -4px;
+            margin-left: 18px;
+            margin-right: 8px;
+        }
+
+        .win-dropdown:disabled::picker-icon {
+            border-color: hsla(0, 0%, 100%, .2);
+            color: hsla(0, 0%, 100%, .2);
+        }
+
+        .win-dropdown::picker(select) {
+            -webkit-appearance: base-select;
+            appearance: base-select;
+            background: #2b2b2b;
+            border: 2px solid #212121;
+        }
+
+        .win-dropdown option {
+            padding: 5px 12px 7px;
+        }
+
+            .win-dropdown option::checkmark {
+                display: none;
+            }
+
+    .win-ui-light .win-dropdown::picker-icon {
+        color: rgba(0, 0, 0, .8);
+    }
+
+    .win-ui-light .win-dropdown:disabled::picker-icon {
+        border-color: rgba(0, 0, 0, .2);
+        color: rgba(0, 0, 0, .2);
+    }
+
+    .win-ui-light .win-dropdown::picker(select) {
+        background: #f2f2f2;
+        border: 2px solid #212121;
+    }
+
+    @media (-ms-high-contrast) {
+        .win-dropdown::picker-icon {
+            color: ButtonText;
+        }
+
+        .win-dropdown:disabled::picker-icon {
+            color: GrayText;
+        }
+
+        .win-dropdown::picker(select) {
+            background-color: ButtonFace;
+            border-color: GrayText;
+        }
+    }
+}
+
+.pivot-container,
 .root,
 body {
     display: flex;
@@ -108,7 +186,7 @@ h5.win-type-base {
 }
 
 .win-code {
-    font-family: "Cascadia Code NF", "Cascadia Code PL", "Cascadia Code", "Cascadia Next SC", "Cascadia Next TC", "Cascadia Next JP", Consolas, Menlo, Monaco, "Courier New", monospace;
+    font-family: Cascadia Code NF, Cascadia Code PL, Cascadia Code, Cascadia Next SC, Cascadia Next TC, Cascadia Next JP, Consolas, Menlo, Monaco, Courier New, monospace;
 }
 
     .win-code.win-type-base {

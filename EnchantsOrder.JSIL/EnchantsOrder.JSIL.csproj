@@ -37,12 +37,12 @@
 
   <ItemGroup>
     <PackageReference Include="AjaxMin" Version="5.14.5506.26202" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="EnchantsOrder" Version="0.2.7" />
-    <PackageReference Include="JSIL.Compiler" Version="0.8.2.13" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="JSIL.Libraries" Version="0.8.2.13" GeneratePathProperty="true" />
-    <PackageReference Include="JSIL.Meta" Version="0.8.2.13" />
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" PrivateAssets="all" />
-    <PackageReference Include="PolySharp" Version="1.15.0">
+    <PackageReference Include="EnchantsOrder" Version="0.2.8" />
+    <PackageReference Include="JSIL.Compiler" Version="0.8.2.17" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Libraries" Version="0.8.2.17" GeneratePathProperty="true" />
+    <PackageReference Include="JSIL.Meta" Version="0.8.2.17" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Version="1.16.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -95,13 +95,7 @@
       <CssSourceFiles Include="$(OutputPath)$(JSILOutputPath)\**\*.css" Exclude="$(OutputPath)$(JSILOutputPath)\lib\**\*.*;**\*.min.*" />
     </ItemGroup>
     <Message Text="Processing AjaxMin" Importance="high" />
-    <AjaxMin IgnoreErrorList="$(IgnoreErrorList)"
-             JsSourceFiles="@(JsSourceFiles)"
-             JsSourceExtensionPattern="$(JsSourceExtensionPattern)"
-             JsTargetExtension="$(JsTargetExtension)"
-             CssSourceFiles="@(CssSourceFiles)"
-             CssSourceExtensionPattern="$(CssSourceExtensionPattern)"
-             CssTargetExtension="$(CssTargetExtension)" />
+    <AjaxMin IgnoreErrorList="$(IgnoreErrorList)" JsSourceFiles="@(JsSourceFiles)" JsSourceExtensionPattern="$(JsSourceExtensionPattern)" JsTargetExtension="$(JsTargetExtension)" CssSourceFiles="@(CssSourceFiles)" CssSourceExtensionPattern="$(CssSourceExtensionPattern)" CssTargetExtension="$(CssTargetExtension)" />
   </Target>
 
   <UsingTask AssemblyFile="$(PkgAjaxMin)/tools/net40/AjaxMinTask.dll" TaskName="AjaxMin" Runtime="CLR4" />
