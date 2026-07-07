@@ -75,6 +75,15 @@
     <!--[if lte IE 9]>
         <link href="./css/noscript.css" type="text/css" rel="stylesheet" />
     <![endif]-->
+
+    <link id="base-select-prefix" href="./css/prefix.css" type="text/css" rel="stylesheet" disabled />
+    <script type="text/javascript">
+        if (window.CSS && CSS.supports &&
+            (CSS.supports("appearance", "base-select") || CSS.supports("-webkit-appearance", "base-select"))) {
+            document.getElementById("base-select-prefix").disabled = false;
+        }
+    </script>
+
     <script src="./lib/winjs/js/base.min.js" type="text/javascript"></script>
     <script src="./lib/winjs/js/ui.min.js" type="text/javascript"></script>
     <script src="./js/i18n.js" type="text/javascript"></script>
