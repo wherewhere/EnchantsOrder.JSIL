@@ -21,10 +21,12 @@ body {
 }
 
 .win-ui-light {
+    transition: background-color 0.083s ease-in-out;
     color-scheme: light;
 }
 
 .win-ui-dark {
+    transition: background-color 0.083s ease-in-out;
     color-scheme: dark;
 }
 
@@ -33,6 +35,13 @@ body {
     overflow-y: auto;
     padding: 16px;
     background: inherit;
+    transition: padding 0.083s ease-in-out, background-color 0.083s ease-in-out;
+}
+
+@media (min-width: 640px) {
+    .root {
+        padding: 32px;
+    }
 }
 
 #progress-bar.win-progress-bar {
