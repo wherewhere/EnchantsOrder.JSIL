@@ -25,7 +25,7 @@ function getCurrentLanguage() {
  * @param {string} language
  */
 function loadResource(language) {
-    var url = "./strings/" + language + "/resources.rejson";
+    var url = "./strings/" + language + "/resources.resjson";
     if (typeof fetch === "undefined") {
         var IPromise = typeof Promise === "undefined" ? WinJS.Promise : Promise;
         return new IPromise(function (resolve, reject) {
