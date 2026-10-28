@@ -1,6 +1,5 @@
 ﻿using EnchantsOrder.JSIL.Common;
 using EnchantsOrder.Models;
-using JSIL;
 using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Models
