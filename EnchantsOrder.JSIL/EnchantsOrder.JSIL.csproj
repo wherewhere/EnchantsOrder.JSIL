@@ -78,16 +78,30 @@
     <JSILConfig Include="**\*.jsilconfig" />
   </ItemGroup>
 
-  <Target Name="DownloadDependency" AfterTargets="Restore">
+  <ItemGroup>
+    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png">
+      <LocalFile>wwwroot\lib\enchants-order\logo.png</LocalFile>
+    </DownloadItem>
+    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json">
+      <LocalFile>wwwroot\lib\enchants-order\Enchants.en-US.json</LocalFile>
+    </DownloadItem>
+    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.zh-CN.json">
+      <LocalFile>wwwroot\lib\enchants-order\Enchants.zh-CN.json</LocalFile>
+    </DownloadItem>
+  </ItemGroup>
+
+  <Target Name="DownloadDependency" BeforeTargets="PreBuildEvent">
+    <ItemGroup>
+      <MissingDownloadItem Include="@(DownloadItem)" Condition="!Exists('%(LocalFile)')">
+        <DestinationFolder>$([System.IO.Path]::GetDirectoryName('%(LocalFile)'))</DestinationFolder>
+        <DestinationFileName>$([System.IO.Path]::GetFileName('%(LocalFile)'))</DestinationFileName>
+      </MissingDownloadItem>
+    </ItemGroup>
     <DownloadFile
-        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png"
-        DestinationFolder="wwwroot\lib\enchants-order" />
-    <DownloadFile
-        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json"
-        DestinationFolder="wwwroot\lib\enchants-order" />
-    <DownloadFile
-        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.zh-CN.json"
-        DestinationFolder="wwwroot\lib\enchants-order" />
+      SourceUrl="%(MissingDownloadItem.Identity)"
+      DestinationFolder="%(MissingDownloadItem.DestinationFolder)"
+      DestinationFileName="%(MissingDownloadItem.DestinationFileName)"
+      Condition="'@(MissingDownloadItem)' != ''" />
   </Target>
 
   <Target Name="JsilTranslation" AfterTargets="AfterBuild" Condition="$(RunJSILCompilation)">
