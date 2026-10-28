@@ -78,6 +78,18 @@
     <JSILConfig Include="**\*.jsilconfig" />
   </ItemGroup>
 
+  <Target Name="DownloadDependency" AfterTargets="Restore">
+    <DownloadFile
+        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png"
+        DestinationFolder="wwwroot\lib\enchants-order" />
+    <DownloadFile
+        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json"
+        DestinationFolder="wwwroot\lib\enchants-order" />
+    <DownloadFile
+        SourceUrl="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.zh-CN.json"
+        DestinationFolder="wwwroot\lib\enchants-order" />
+  </Target>
+
   <Target Name="JsilTranslation" AfterTargets="AfterBuild" Condition="$(RunJSILCompilation)">
     <PropertyGroup>
       <_JsilcDir>$(PkgJSIL_Compiler)\tools\jsilc</_JsilcDir>

@@ -169,7 +169,7 @@ namespace EnchantsOrder.JSIL
             {
                 [JSReplacement("getCurrentLanguage()")]
                 static extern string getCurrentLanguage();
-                object json = await XMLHttpRequest.FetchJsonAsync("https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants." + getCurrentLanguage() + ".json");
+                object json = await XMLHttpRequest.FetchJsonAsync("./lib/enchants-order/Enchants." + getCurrentLanguage() + ".json");
                 string[] keys = json.Keys();
                 foreach (string key in keys)
                 {

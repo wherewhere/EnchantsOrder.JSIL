@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      Solution_Name: EnchantsOrder.JSIL/EnchantsOrder.JSIL.csproj
 
     steps:
       - name: Checkout
@@ -25,11 +27,11 @@ jobs:
 
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Install Dependencies
-        run: dotnet restore
+        run: dotnet restore ${{ env.Solution_Name }}
 
       - name: Build
-        run: dotnet build -c:Release -p:RunJSILCompilation=false `
-          && msbuild /m /p:Configuration=Release /p:OutputPath=../public/
+        run: dotnet build ${{ env.Solution_Name }} -c:Release -p:RunJSILCompilation=false `
+          && msbuild ${{ env.Solution_Name }} /m /p:Configuration=Release /p:OutputPath=../public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

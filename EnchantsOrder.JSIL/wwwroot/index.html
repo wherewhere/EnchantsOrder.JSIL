@@ -7,8 +7,7 @@
     <meta name="description" content="Get the best order for enchanting." data-win-res="{ content: 'description' }" />
     <meta name="theme-color" content="#fff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)" />
-    <link rel="icon" type="image/png" sizes="256x256"
-          href="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="./lib/enchants-order/logo.png" />
 
     <style type="text/css">
         :root {
@@ -61,7 +60,7 @@
     </script>
     <script src="https://hm.baidu.com/hm.js?271f5d3abe652ce0122880579c66289e" type="text/javascript" defer></script>
     <script type="text/javascript">
-        window.clarity = window.clarity || function() {
+        window.clarity = window.clarity || function () {
             (window.clarity.q = window.clarity.q || []).push(arguments);
         };
     </script>
@@ -116,7 +115,7 @@
 
 <body class="win-ui-dark win-type-body" onload="onLoad()">
     <script type="text/javascript">
-        (function() {
+        (function () {
             function applyColorScheme(isLight) {
                 if (isLight) {
                     document.body.classList.add("win-ui-light");
@@ -128,7 +127,7 @@
                 }
             }
             var scheme = matchMedia("(prefers-color-scheme: light)");
-            scheme.addListener(function(e) { applyColorScheme(e.matches); });
+            scheme.addListener(function (e) { applyColorScheme(e.matches); });
             applyColorScheme(scheme.matches);
         })();
     </script>
