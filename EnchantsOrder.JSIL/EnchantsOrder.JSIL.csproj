@@ -42,7 +42,7 @@
     <PackageReference Include="JSIL.Libraries" Version="0.8.2.17" GeneratePathProperty="true" />
     <PackageReference Include="JSIL.Meta" Version="0.8.2.17" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" PrivateAssets="all" />
-    <PackageReference Include="PolySharp" Version="1.16.0">
+    <PackageReference Include="PolySharp" Version="1.17.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -79,13 +79,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/logo.png">
+    <DownloadItem Include="https://github.com/wherewhere/Enchants-Order/raw/refs/heads/main/logo.png">
       <LocalFile>wwwroot\lib\enchants-order\logo.png</LocalFile>
     </DownloadItem>
-    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json">
+    <DownloadItem Include="https://github.com/wherewhere/Enchants-Order/raw/refs/heads/main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.en-US.json">
       <LocalFile>wwwroot\lib\enchants-order\Enchants.en-US.json</LocalFile>
     </DownloadItem>
-    <DownloadItem Include="https://cdn.jsdelivr.net/gh/wherewhere/Enchants-Order@main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.zh-CN.json">
+    <DownloadItem Include="https://github.com/wherewhere/Enchants-Order/raw/refs/heads/main/EnchantsOrder/EnchantsOrder.Demo/Assets/Enchants/Enchants.zh-CN.json">
       <LocalFile>wwwroot\lib\enchants-order\Enchants.zh-CN.json</LocalFile>
     </DownloadItem>
   </ItemGroup>

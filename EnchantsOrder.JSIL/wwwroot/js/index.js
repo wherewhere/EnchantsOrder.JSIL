@@ -39,6 +39,13 @@ function runMain() {
         });
     };
 
+    JSIL.ImplementExternals("System.Collections.Generic.List`1", function ($) {
+        $.Method({ Static: false, Public: true }, "TrimExcess",
+            JSIL.MethodSignature.Void,
+            function () { }
+        );
+    });
+
     JSIL.ImplementExternals("System.Linq.Enumerable", function ($) {
         $.Method({ Static: true, Public: true }, "Min",
             new JSIL.MethodSignature(System.Int32, [System.Collections.Generic.IEnumerable$b1.Of(System.Int32)]),

@@ -7,24 +7,7 @@ namespace EnchantsOrder.JSIL.Common
     /// </summary>
     public sealed class JQuery
     {
-        [JSReplacement("window.jQuery()")]
-        public extern JQuery();
-
-        /// <summary>
-        /// Accepts a string containing a CSS selector which is then used to match a set of elements.
-        /// </summary>
-        /// <param name="element">A string containing a selector expression or a DOM element to wrap in a jQuery object.</param>
-        [JSReplacement("window.jQuery($element)")]
-        public static extern JQuery Invoke(object element);
-
-        /// <summary>
-        /// Binds a function to be executed when the DOM has finished loading.
-        /// </summary>
-        /// <param name="element">A function to execute after the DOM is ready.</param>
-        [JSReplacement("window.jQuery($element)")]
-        public static extern JQuery Invoke(Action element);
-
-        public extern IHTMLElement this[int index]
+        public extern HTMLElement this[int index]
         {
             [JSReplacement("$this[$index]")]
             get;

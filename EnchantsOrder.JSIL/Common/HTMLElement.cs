@@ -1,8 +1,9 @@
-﻿using JSIL.Meta;
+﻿#pragma warning disable IDE1006
+using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Common
 {
-    public interface IHTMLElementBase
+    public interface HTMLElementBase
     {
         /// <summary>
         /// The <see cref="AddEventListener"/> method of the EventTarget interface sets up a function that will be called whenever the specified event is delivered to the target.
@@ -15,21 +16,21 @@ namespace EnchantsOrder.JSIL.Common
     }
 
     /// <summary>
-    /// The <see cref="IHTMLElement"/> interface represents any HTML element. Some elements directly implement this interface, while others implement it via an interface that inherits it.
+    /// The <see cref="HTMLElement"/> interface represents any HTML element. Some elements directly implement this interface, while others implement it via an interface that inherits it.
     /// </summary>
-    public interface IHTMLElement : IHTMLElementBase
+    public interface HTMLElement : HTMLElementBase
     {
-        IWinJSElement WinControl
+        WinJSElement WinControl
         {
             [JSReplacement("$this.winControl")]
             get;
         }
     }
 
-    public interface ICustomEvent<T>
+    public interface CustomEvent<T>
     {
         /// <summary>
-        /// The read-only <see cref="Detail"/> property of the <see cref="ICustomEvent{T}"/> interface returns any data passed when initializing the event.
+        /// The read-only <see cref="Detail"/> property of the <see cref="CustomEvent{T}"/> interface returns any data passed when initializing the event.
         /// </summary>
         T Detail
         {

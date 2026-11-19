@@ -14,5 +14,14 @@ namespace EnchantsOrder.JSIL.Common
             [JSReplacement("$this[$key] = $value")]
             set;
         }
+
+        [JSReplacement("!!$obj")]
+        public static extern bool operator true(JSObject obj);
+
+        [JSReplacement("!$obj")]
+        public static extern bool operator false(JSObject obj);
+
+        [JSReplacement("!!$obj")]
+        public static extern implicit operator bool(JSObject obj);
     }
 }

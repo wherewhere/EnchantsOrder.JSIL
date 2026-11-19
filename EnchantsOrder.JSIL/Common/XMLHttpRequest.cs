@@ -1,4 +1,5 @@
-﻿using JSIL.Meta;
+﻿using JSIL;
+using JSIL.Meta;
 
 namespace EnchantsOrder.JSIL.Common
 {
@@ -8,6 +9,9 @@ namespace EnchantsOrder.JSIL.Common
     /// </summary>
     public sealed class XMLHttpRequest
     {
+        [JSImmutable]
+        private static readonly bool IsFetchSupported = Builtins.Global["fetch"].As<object, JSObject>();
+
         [JSReplacement("new XMLHttpRequest()")]
         public extern XMLHttpRequest();
 
@@ -50,9 +54,9 @@ namespace EnchantsOrder.JSIL.Common
         public static Task<string> FetchAsync(string url)
         {
             TaskCompletionSource<string> tcs = new();
-            if (Fetch.IsSupported)
+            if (IsFetchSupported)
             {
-                _ = Fetch.Invoke(url)
+                _ = Window.Fetch(url)
                     .Then(x => x.Text())
                     .Then(
                         new Action<string>(value => _ = tcs.TrySetResult(value)),
@@ -83,9 +87,9 @@ namespace EnchantsOrder.JSIL.Common
 
         public static async Task<object> FetchJsonAsync(string url)
         {
-            if (Fetch.IsSupported)
+            if (IsFetchSupported)
             {
-                return await Fetch.Invoke(url).Then(x => x.Json());
+                return await Window.Fetch(url).Then(x => x.Json());
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using JSIL.Meta;
+﻿#pragma warning disable IDE1006
+using JSIL.Meta;
 using System.Collections;
 
 namespace EnchantsOrder.JSIL.Common
@@ -89,16 +90,16 @@ namespace EnchantsOrder.JSIL.Common
     /// </summary>
     public interface IListDataSource<T>;
 
-    public interface IWinJSElement : IHTMLElementBase
+    public interface WinJSElement : HTMLElementBase
     {
         [JSReplacement("$this")]
-        T As<T>() where T : IWinJSElement;
+        T As<T>() where T : WinJSElement;
     }
 
     /// <summary>
     /// A rich input box that provides suggestions as the user types.
     /// </summary>
-    public interface IAutoSuggestBox : IWinJSElement
+    public interface AutoSuggestBox : WinJSElement
     {
         /// <summary>
         /// Gets or sets the query text for the AutoSuggestBox.
@@ -116,10 +117,10 @@ namespace EnchantsOrder.JSIL.Common
         }
     }
 
-    public interface ISearchBoxEventArgs
+    public interface SearchBoxEventArgs
     {
         /// <summary>
-        /// The query text entered into the <see cref="IAutoSuggestBox"/> control.
+        /// The query text entered into the <see cref="AutoSuggestBox"/> control.
         /// </summary>
         string QueryText
         {
@@ -131,12 +132,12 @@ namespace EnchantsOrder.JSIL.Common
     /// <summary>
     /// Provides event data for the SearchBox.SuggestionsRequested event.
     /// </summary>
-    public interface ISearchBoxSuggestionsRequestedEventArgs : ISearchBoxEventArgs
+    public interface SearchBoxSuggestionsRequestedEventArgs : SearchBoxEventArgs
     {
         /// <summary>
         /// The collection of suggested options for the search query. The maximum length of all of the textual fields in a suggestion (such as text, detail text, and image alt text) is 512 characters.
         /// </summary>
-        ISearchSuggestionCollection SearchSuggestionCollection
+        SearchSuggestionCollection SearchSuggestionCollection
         {
             [JSReplacement("$this.searchSuggestionCollection")]
             get;
@@ -146,7 +147,7 @@ namespace EnchantsOrder.JSIL.Common
     /// <summary>
     /// Appends a list of query suggestions to the list of search suggestions for the search pane.
     /// </summary>
-    public interface ISearchSuggestionCollection
+    public interface SearchSuggestionCollection
     {
         /// <summary>
         /// Appends a list of query suggestions to the list of search suggestions for the search pane.
@@ -159,7 +160,7 @@ namespace EnchantsOrder.JSIL.Common
     /// <summary>
     /// Displays data items in a customizable list or grid.
     /// </summary>
-    public interface IListView<T> : IWinJSElement
+    public interface ListView<T> : WinJSElement
     {
         /// <summary>
         /// Returns the index of the item that the specified DOM element displays.
@@ -167,7 +168,7 @@ namespace EnchantsOrder.JSIL.Common
         /// <param name="element">The DOM element that displays the item.</param>
         /// <returns>The index of the item displayed by element.</returns>
         [JSReplacement("$this.indexOfElement($element)")]
-        int IndexOfElement(IHTMLElement element);
+        int IndexOfElement(HTMLElement element);
 
         /// <summary>
         /// Gets or sets the data source for the ListView.

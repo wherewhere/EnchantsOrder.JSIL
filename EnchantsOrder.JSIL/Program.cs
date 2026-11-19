@@ -24,12 +24,12 @@ namespace EnchantsOrder.JSIL
             [JSReplacement("WinJS.Application.start()")]
             static extern void start();
 
-            JQuery.Invoke(OnLoaded);
+            Window.JQuery(OnLoaded);
         }
 
         private static async void OnLoaded()
         {
-            _ = JQuery.Invoke("#progress-bar").RemoveAttr("style");
+            _ = Window.JQuery("#progress-bar").RemoveAttr("style");
             await InitializeEnchantmentsAsync();
             InitializeEnchants();
             InitializeItems();
@@ -37,25 +37,25 @@ namespace EnchantsOrder.JSIL
 
         private static void InitializeEnchants()
         {
-            JQuery name = JQuery.Invoke("#enchants-enchantment-name-selector");
-            IAutoSuggestBox selector = name[0].WinControl.As<IAutoSuggestBox>();
+            JQuery name = Window.JQuery("#enchants-enchantment-name-selector");
+            AutoSuggestBox selector = name[0].WinControl.As<AutoSuggestBox>();
 
-            selector.AddEventListener<ICustomEvent<ISearchBoxSuggestionsRequestedEventArgs>>(
+            selector.AddEventListener<CustomEvent<SearchBoxSuggestionsRequestedEventArgs>>(
                 "suggestionsrequested",
                 eventInfo =>
                 {
                     string queryText = eventInfo.Detail.QueryText;
-                    ISearchSuggestionCollection collection = eventInfo.Detail.SearchSuggestionCollection;
+                    SearchSuggestionCollection collection = eventInfo.Detail.SearchSuggestionCollection;
                     collection.AppendQuerySuggestions(
                         [.. (string.IsNullOrWhiteSpace(queryText) ? Enchantments
                             : Enchantments.Where(x => x.Name.Contains(queryText))).Select(x => x.Name)]);
                 });
 
-            JQuery penalty = JQuery.Invoke("#enchants-object-penalty-input");
-            JQuery level = JQuery.Invoke("#enchants-enchantment-level-input");
-            JQuery weight = JQuery.Invoke("#enchants-enchantment-weight-input");
+            JQuery penalty = Window.JQuery("#enchants-object-penalty-input");
+            JQuery level = Window.JQuery("#enchants-enchantment-level-input");
+            JQuery weight = Window.JQuery("#enchants-enchantment-weight-input");
 
-            selector.AddEventListener<ICustomEvent<ISearchBoxEventArgs>>(
+            selector.AddEventListener<CustomEvent<SearchBoxEventArgs>>(
                 "querysubmitted",
                 eventInfo =>
                 {
@@ -74,13 +74,13 @@ namespace EnchantsOrder.JSIL
             static extern void addEventListener(string type, Action listener);
             addEventListener("hashchange", LoadSettings);
 
-            JQuery wantedGroup = JQuery.Invoke("#enchants-wanted-group").RemoveAttr("style");
+            JQuery wantedGroup = Window.JQuery("#enchants-wanted-group").RemoveAttr("style");
             if (wantedList.Length == 0)
             {
                 _ = wantedGroup.Hide();
             }
 
-            JQuery.Invoke("#enchants-enchantment-add").Click(_ =>
+            Window.JQuery("#enchants-enchantment-add").Click(_ =>
             {
                 string name = selector.QueryText;
                 if (!string.IsNullOrWhiteSpace(name))
@@ -94,18 +94,16 @@ namespace EnchantsOrder.JSIL
                 }
             });
 
-            IListView<global::EnchantsOrder.Models.Enchantment> listView =
-                JQuery.Invoke("#enchants-wanted-list")[0].WinControl.As<IListView<global::EnchantsOrder.Models.Enchantment>>();
+            ListView<global::EnchantsOrder.Models.Enchantment> listView =
+                Window.JQuery("#enchants-wanted-list")[0].WinControl.As<ListView<global::EnchantsOrder.Models.Enchantment>>();
             listView.ItemDataSource = wantedList.dataSource;
 
-            JQuery resultsGroup = JQuery.Invoke("#enchants-results-group").RemoveAttr("style").Hide();
-            [JSReplacement("window.deleteEnchantment = $action")]
-            static extern void SetDeleteEnchantment(Action<IHTMLElement> action);
-            SetDeleteEnchantment(e =>
+            JQuery resultsGroup = Window.JQuery("#enchants-results-group").RemoveAttr("style").Hide();
+            Window.DeleteEnchantment = e =>
             {
                 try
                 {
-                    JQuery template = JQuery.Invoke(e).Parents(".win-template");
+                    JQuery template = Window.JQuery(e).Parents(".win-template");
                     int index = listView.IndexOfElement(template[0]);
                     wantedList.Splice(index, 1);
                 }
@@ -117,9 +115,9 @@ namespace EnchantsOrder.JSIL
                         _ = resultsGroup.Hide();
                     }
                 }
-            });
+            };
 
-            _ = JQuery.Invoke("#enchants-enchantment-start").Click(_ =>
+            _ = Window.JQuery("#enchants-enchantment-start").Click(_ =>
             {
                 BindingListImplement.ListReader<global::EnchantsOrder.Models.Enchantment> reader =
                     wantedList.GetEnumerable();
@@ -129,8 +127,8 @@ namespace EnchantsOrder.JSIL
                     OrderingResults results = reader.Ordering(penaltyValue);
                     string str = results.ToCultureString();
                     _ = results.IsTooExpensive
-                        ? JQuery.Invoke("#enchants-results-output").Html(str + "\n<span class='accent-text'>" + Resource.TooExpensive + "</span>")
-                        : JQuery.Invoke("#enchants-results-output").Text(str);
+                        ? Window.JQuery("#enchants-results-output").Html(str + "\n<span class='accent-text'>" + Resource.TooExpensive + "</span>")
+                        : Window.JQuery("#enchants-results-output").Text(str);
                     _ = resultsGroup.Show();
                     SetSettings(reader);
                 }
@@ -139,14 +137,14 @@ namespace EnchantsOrder.JSIL
 
         private static void InitializeItems()
         {
-            JQuery item = JQuery.Invoke("#items-object-select-selector").Html(
+            JQuery item = Window.JQuery("#items-object-select-selector").Html(
                 $"""
                 <option style='display: none' value disabled selected>{Resource.ChooseItem}</option>
                 {string.Join("\n", Items.Select(x => "<option>" + x + "</option>"))}
                 """);
-            JQuery penalty = JQuery.Invoke("#items-object-penalty-input");
+            JQuery penalty = Window.JQuery("#items-object-penalty-input");
 
-            JQuery resultsGroup = JQuery.Invoke("#items-results-group").RemoveAttr("style").Hide();
+            JQuery resultsGroup = Window.JQuery("#items-results-group").RemoveAttr("style").Hide();
             _ = item.Change(OnChange);
             _ = penalty.Change(OnChange);
 
@@ -156,7 +154,7 @@ namespace EnchantsOrder.JSIL
                 if (!string.IsNullOrWhiteSpace(itemName))
                 {
                     int penaltyValue = int.Parse(penalty.Val<string>());
-                    _ = JQuery.Invoke("#items-results-output").Html(GetItemList(itemName, penaltyValue));
+                    _ = Window.JQuery("#items-results-output").Html(GetItemList(itemName, penaltyValue));
                     _ = resultsGroup.Show();
                 }
             }
@@ -164,7 +162,7 @@ namespace EnchantsOrder.JSIL
 
         private static async Task InitializeEnchantmentsAsync()
         {
-            JQuery progress = JQuery.Invoke("#progress-bar").Show();
+            JQuery progress = Window.JQuery("#progress-bar").Show();
             try
             {
                 [JSReplacement("getCurrentLanguage()")]
@@ -194,9 +192,7 @@ namespace EnchantsOrder.JSIL
                 hashChanged = false;
                 return;
             }
-            string hash = locationHash()[1..];
-            [JSReplacement("location.hash")]
-            static extern string locationHash();
+            string hash = Window.Location.Hash[1..];
             if (!string.IsNullOrWhiteSpace(hash))
             {
                 URLSearchParams @params = new(hash);
@@ -238,7 +234,7 @@ namespace EnchantsOrder.JSIL
             {
                 settings["wanted"] = compressToEncodedURIComponent(
                     stringify([
-                        .. wantedList.Select(x => new JSObject() {
+                        .. wantedList.Select(x => new JSObject {
                             ["name"] = x.Name.As<string, JSObject>(),
                             ["level"] = x.Level.As<int, JSObject>(),
                             ["weight"] = x.Weight.As<int, JSObject>()
@@ -248,10 +244,12 @@ namespace EnchantsOrder.JSIL
                 [JSReplacement("LZString.compressToEncodedURIComponent($input)")]
                 static extern string compressToEncodedURIComponent(string input);
             }
-            locationHash(new URLSearchParams(settings).ToString());
-            [JSReplacement("location.hash = $hash")]
-            static extern void locationHash(string hash);
-            hashChanged = true;
+            string hash = "#" + new URLSearchParams(settings).ToString();
+            if (Window.Location.Hash != hash)
+            {
+                hashChanged = true;
+                Window.Location.Hash = hash;
+            }
         }
 
         private static string GetItemList(string text, int initialPenalty)
@@ -432,8 +430,11 @@ namespace EnchantsOrder.JSIL
             }
             else
             {
-                StringBuilder builder = new();
-                _ = builder.Append(Resource.Step).Append(' ').Append(step.Step).Append(':');
+                StringBuilder builder =
+                    new StringBuilder(Resource.Step)
+                        .Append(' ')
+                        .Append(step.Step)
+                        .Append(':');
                 int half = step.Count / 2;
                 for (int i = half; i > 0; i--)
                 {
